@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "backend implemented with MongoDB and express",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dbUtils.js",
+    "test": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "cis3500",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.2.3"
+  },
+  "proxy": "http://localhost:3001",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cis350/cis-3500-team-9.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cis350/cis-3500-team-9/issues"
+  },
+  "homepage": "https://github.com/cis350/cis-3500-team-9#readme"
+}
