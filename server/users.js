@@ -103,14 +103,11 @@ const deleteUser = async (userID) => {
     console.log(`error: ${err.message}`);
   }
 };
-addUser({email: 'test@upenn.edu', username: 'sukya', password: 'tata2'});
-async function main() {
-  await addUser({username: 'sukya', password: 'tata2'});
-  // await getAllUsers();
 
-  // await getUser('65f8eb1b148959ce4823c0bc');
-  // await closeMongoDBConnection();
+async function main() {
+  
 }
+
 main();
 // export the functions
 module.exports = {
