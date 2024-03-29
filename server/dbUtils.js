@@ -6,7 +6,7 @@
 const { MongoClient } = require('mongodb');
 
 // DB location
-const dbURL = '';
+const dbURL = process.env.MONGODB_URI;
 
 // MongoDB database connection
 let MongoConnection;
