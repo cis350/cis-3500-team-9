@@ -4,10 +4,11 @@
 
 // import the driver
 const { MongoClient } = require('mongodb');
+require('dotenv').config({ path: '../.env' });
 
 // DB location
 const dbURL = process.env.MONGODB_URI;
-
+console.log(process.env.MONGODB_URI);
 // MongoDB database connection
 let MongoConnection;
 
