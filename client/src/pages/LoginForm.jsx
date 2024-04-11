@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../App.css';
 
 const LoginForm = () => {
   const [credentials, setCredentials] = useState({
@@ -34,24 +35,34 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={credentials.username}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={credentials.password}
-        onChange={handleChange}
-        required
-      />
-      <button type="submit">Login</button>
+      <body>
+        <h2>Sign in to when2eat</h2>
+        <div class='inputForm'>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={credentials.username}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Login</button>
+        </div>
+        <div id='redirect-text'>
+          <p>Don't have an account? <a>Create one</a></p>
+          <a>Reset password</a>
+        </div>
+        
+      </body>
+      
     </form>
   );
 };
