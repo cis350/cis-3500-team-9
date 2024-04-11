@@ -1,0 +1,31 @@
+{
+  "name": "cis-3500-team-9",
+  "version": "1.0.0",
+  "description": "cis-3500 project",
+  "main": "index.js",
+  "react": "^15.3.1",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cis350/cis-3500-team-9.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cis350/cis-3500-team-9/issues"
+  },
+  "homepage": "https://github.com/cis350/cis-3500-team-9#readme",
+  "dependencies": {
+    "@types/react": "^18.2.76",
+    "@types/react-dom": "^18.2.25",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "^5.0.1"
+  }
+}
