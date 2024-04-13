@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  BrowserRouter,
 } from "react-router-dom";
 import LoginForm from './pages/LoginForm';
 import RegistrationForm from './pages/RegistrationForm';
@@ -70,13 +71,20 @@ import ResetPass from './pages/ResetPass';
 
 function App() {
   return (
-    <div className='App'>
-      <body>
-        {/* <LoginForm/> */}
-        <RegistrationForm/>
-        {/* <ResetPass/> */}
-      </body>
-    </div>
+    // <div className='App'>
+    //   <body>
+    //     <LoginForm/>
+    //     <RegistrationForm/>
+    //     <ResetPass/>
+    //   </body>
+    // </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginForm/>}/>
+        <Route path="/registration" element={<RegistrationForm/>}/>
+        <Route path="/reset_password" element={<ResetPass/>}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
