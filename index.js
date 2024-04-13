@@ -3,7 +3,7 @@
  */
 
 // import the express app
-const webapp = require('./server/controller/server.js');
+const webapp = require('./controller/server.js');
 
 const port = 8080;
 // start the web server

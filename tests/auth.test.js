@@ -32,9 +32,9 @@ describe('POST /login  enpoint tests', () => {
     // we need to clear the DB
     try {
       // await deleteTestDataFromDB(db, 'testuser');
-      //await mongo.close(); // the db connection in beforeAll
+      await mongo.close(); // the db connection in beforeAll
       await closeMongoDBConnection(); // the db connection in missing uname
-      // await closeMongoDBConnection(); // the db connection in missing password
+      await closeMongoDBConnection(); // the db connection in missing password
     } catch (err) {
       return err;
     }

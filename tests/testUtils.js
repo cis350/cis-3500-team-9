@@ -1,63 +1,62 @@
 /**
- * Utility functions for testing.
+ * utility functions for testing
  */
 const testUser = {
-    email: 'testemail@example.com',
     username: 'testuser',
-    password: 'testpassword',
-    name: 'Test User',
-};
-
-/**
- * Add a test data to the database.
- * @param {*} db - The database. 
- * @param {*} testData - The test user data.
- */
-const insertTestUserToDB = async (db, testData)  => {
+    password: 'cis3500',
+  };
+  /**
+   * Adds a test student to the DB
+   * @param {*} testData - the test data
+   * @param {*} db - the database
+   * @returns the id of the data
+   */
+  const insertTestDataToDB = async (db, testData) => {
     const result = await db.collection('users').insertOne(testData);
     return result.insertedId;
-};
-
-/**
- * Remove a test data from the database.
- * @param {*} db 
- * @param {*} testData 
- */
-const deleteTestUserFromDB = async (db, testData) => {
+  };
+  /**
+   *
+   * @param {*} db
+   * @param {*} testData
+   * @returns
+   */
+  const deleteTestDataFromDB = async (db, testData) => {
     try {
-        const result = await db.collection('users').deleteOne({ email: testData.email });
-        const { deleteCount }  = result;
-        if (deleteCount === 1) {
-            console.log('info', 'Successfully deleted test user from the database');
-        } else {
-            console.log('warning', 'Test user not deleted in the database');
-        }
+      const result = await db.collection('students').deleteMany({ name: testData });
+      const { deletedCount } = result;
+      if (deletedCount === 1) {
+        console.log('info', 'Successfully deleted test student');
+      } else {
+        console.log('warning', 'test student was not deleted');
+      }
     } catch (err) {
-        console.log('error', err.message);
+      console.log('error', err.message);
     }
-};
-
-/**
- * Utility function to check if a value is in an array.
- * 
- * @param {*} arr 
- * @param {*} val 
- * @returns 
- */
-const isInArray = (arr, val) => {
+  };
+  
+  /**
+   * utility function to test if the id
+   * of the test student is in the response (array)
+   *
+   * @param {*} arr
+   * @param {*} val
+   * @returns
+   */
+  const isInArray = (arr, val) => {
     let value = false;
     arr.map((x) => {
-        if (String(x.id) === String(val)) {
-            value = true;
-        }
+      if (String(x._id) === String(val)) {
+        value = true;
+      }
     });
     return value;
-}
-
-// export the functions
-module.exports = {
+  };
+  
+  // export the functions
+  module.exports = {
     testUser,
-    insertTestUserToDB,
-    deleteTestUserFromDB,
+    insertTestDataToDB,
+    deleteTestDataFromDB,
     isInArray,
-}
+  };
