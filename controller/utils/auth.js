@@ -14,9 +14,6 @@ require('dotenv').config();
 // import DB function
 const { getUserByUName } = require('../../model/users');
 
-// blacklisted tokens
-const jwtBlacklist = new Set();
-
 /**
  * Create a JWT containing the username
  * @param {*} userid
@@ -29,7 +26,6 @@ const authenticateUser = (username) => {
     return token;
   } catch (err) {
     console.log('error', err.message);
-    throw err;
   }
 };
 
@@ -40,11 +36,6 @@ const authenticateUser = (username) => {
  */
 const verifyUser = async (token) => {
   try {
-    // check if token blacklisted
-    if (jwtBlacklist.has(token)) {
-      return 3;
-    }
-
     // decoded contains the paylod of the token
     const decoded = jwt.verify(token, process.env.KEY);
     console.log('payload', decoded);
@@ -66,9 +57,6 @@ const verifyUser = async (token) => {
     return 3;
   }
 };
-
-const blacklistJWT = (token) => jwtBlacklist.add(token);
-
 /**
 const main = () =>{
     const token = authenticateUser('cis3500');
@@ -77,4 +65,4 @@ const main = () =>{
 main();
 */
 
-module.exports = { authenticateUser, verifyUser, blacklistJWT };
+module.exports = { authenticateUser, verifyUser };

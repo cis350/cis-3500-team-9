@@ -3,7 +3,7 @@ const { closeMongoDBConnection, getDB } = require('./dbUtils');
 
 /**
  *
- * @param {*} newStudent
+ * @param {*} newUser
  * @returns
  */
 const addUser = async (newUser) => {
@@ -11,7 +11,7 @@ const addUser = async (newUser) => {
     // get the db
     const db = await getDB();
     const result = await db.collection('users').insertOne(newUser);
-    // print the id of the student
+    // print the id of the user
     console.log(`New user created with id: ${result.insertedId}`);
     // return the result
     return result.insertedId;
@@ -30,7 +30,7 @@ const getAllUsers = async () => {
     const db = await getDB();
     const result = await db.collection('users').find({}).toArray();
     // print the results
-    console.log(`Students: ${JSON.stringify(result)}`);
+    console.log(`Users: ${JSON.stringify(result)}`);
     return result;
   } catch (err) {
     console.log(`error: ${err.message}`);
@@ -39,7 +39,7 @@ const getAllUsers = async () => {
 
 /**
    * GET/READ a user given their ID
-   * @param {*} studentID
+   * @param {*} userID
    * @returns
    */
 const getUser = async (userID) => {
@@ -48,7 +48,7 @@ const getUser = async (userID) => {
     const db = await getDB();
     const result = await db.collection('users').findOne({ _id: new ObjectId(userID) });
     // print the result
-    console.log(`Student: ${JSON.stringify(result)}`);
+    console.log(`User: ${JSON.stringify(result)}`);
     return result;
   } catch (err) {
     console.log(`error: ${err.message}`);
@@ -57,7 +57,7 @@ const getUser = async (userID) => {
 
 /**
    *
-   * @param {*} studentName
+   * @param {*} userName
    * @returns
    */
 const getUserByUName = async (username) => {
@@ -66,14 +66,14 @@ const getUserByUName = async (username) => {
     const db = await getDB();
     const result = await db.collection('users').findOne({ username });
     // print the result
-    console.log(`Student: ${JSON.stringify(result)}`);
+    console.log(`User: ${JSON.stringify(result)}`);
     return result;
   } catch (err) {
     console.log(`error: ${err.message}`);
   }
 };
 
-// UPDATE a student given their ID
+// UPDATE a user given their ID
 const updateUser = async (userID, newUName) => {
   try {
     // get the db
@@ -88,7 +88,7 @@ const updateUser = async (userID, newUName) => {
   }
 };
 
-// DELETE a student given their ID
+// DELETE a user given their ID
 const deleteUser = async (userID) => {
   try {
     // get the db
@@ -97,7 +97,7 @@ const deleteUser = async (userID) => {
       { _id: ObjectId(userID) },
     );
       // print the result
-    console.log(`Student: ${JSON.stringify(result)}`);
+    console.log(`User: ${JSON.stringify(result)}`);
     return result;
   } catch (err) {
     console.log(`error: ${err.message}`);

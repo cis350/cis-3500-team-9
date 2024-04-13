@@ -6,7 +6,7 @@ const testUser = {
     password: 'cis3500',
   };
   /**
-   * Adds a test student to the DB
+   * Adds a test user to the DB
    * @param {*} testData - the test data
    * @param {*} db - the database
    * @returns the id of the data
@@ -23,12 +23,12 @@ const testUser = {
    */
   const deleteTestDataFromDB = async (db, testData) => {
     try {
-      const result = await db.collection('students').deleteMany({ name: testData });
+      const result = await db.collection('users').deleteMany({ name: testData });
       const { deletedCount } = result;
       if (deletedCount === 1) {
-        console.log('info', 'Successfully deleted test student');
+        console.log('info', 'Successfully deleted test user');
       } else {
-        console.log('warning', 'test student was not deleted');
+        console.log('warning', 'test user was not deleted');
       }
     } catch (err) {
       console.log('error', err.message);
@@ -37,7 +37,7 @@ const testUser = {
   
   /**
    * utility function to test if the id
-   * of the test student is in the response (array)
+   * of the test user is in the response (array)
    *
    * @param {*} arr
    * @param {*} val

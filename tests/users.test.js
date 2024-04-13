@@ -61,7 +61,7 @@ describe('GET users(s) endpoint integration test', () => {
     expect(resp.status).toEqual(200);
     expect(resp.type).toBe('application/json');
     const user = JSON.parse(resp.text).data;
-    // testStudent is in the response
+    // testUser is in the response
     expect(JSON.stringify(user)).toBe(JSON.stringify({ _id: testUserID, ...testUser }));
   });
 

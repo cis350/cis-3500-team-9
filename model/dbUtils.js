@@ -3,12 +3,12 @@
  */
 
 // import the driver
-require('dotenv').config({ path: '../.env' });
+// require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
 // DB location
 const dbURL = process.env.MONGODB_URI;
-console.log(process.env.MONGODB_URI);
 // MongoDB database connection
 let MongoConnection;
 
@@ -53,7 +53,7 @@ const closeMongoDBConnection = async () => {
 
 connect();
 
-const getStudents = async () => {
+const getUsers = async () => {
   try {
     const db = await getDB();
     const results = db.collection('users').find({}).toArray();
@@ -66,6 +66,7 @@ const getStudents = async () => {
 
 // export the functions
 module.exports = {
+  connect,
   closeMongoDBConnection,
   getDB,
 };
