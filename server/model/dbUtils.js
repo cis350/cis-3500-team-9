@@ -3,8 +3,8 @@
  */
 
 // import the driver
-const { MongoClient } = require('mongodb');
 require('dotenv').config({ path: '../.env' });
+const { MongoClient } = require('mongodb');
 
 // DB location
 const dbURL = process.env.MONGODB_URI;
