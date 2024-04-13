@@ -1,11 +1,11 @@
 const request = require('supertest');
-const { closeMongoDBConnection, connect } = require('../model/dbUtils');
 const webapp = require('../controller/server');
+const { closeMongoDBConnection, connect } = require('../model/dbUtils');
 
 // import test utilities function
 const { testUser } = require('./testUtils');
 
-describe('POST /login  enpoint tests', () => {
+describe('POST /login enpoint tests', () => {
   let mongo; // local mongo connection
   let response; // the response from our express server
   /**
@@ -43,6 +43,15 @@ describe('POST /login  enpoint tests', () => {
   /**
    * Status code and response type
    */
+
+  // Tests for root endpoint
+  test('root endpoint returns 200 and the response type is JSON', async () => {
+    const response = await request(webapp).get('/');
+    expect(response.status).toBe(200); 
+    expect(response.type).toBe('application/json');
+    expect(response.body).toEqual({ message: 'hello CIS3500 friends!!!' });
+  });
+
   test('the status code is 201 and response type', () => {
     expect(response.status).toBe(201); // status code
     expect(response.type).toBe('application/json');
@@ -54,6 +63,7 @@ describe('POST /login  enpoint tests', () => {
     expect(JSON.parse(response.text).apptoken).not.toBe(undefined);
   });
 
+  // Tests for the /login endpoint
   test('missing a field (password) 401', async () => {
     const res = await request(webapp).post('/login/')
       .send('usernamename=testuser');
@@ -64,5 +74,23 @@ describe('POST /login  enpoint tests', () => {
     const res = await request(webapp).post('/login/')
       .send('password=testuser');
     expect(res.status).toEqual(401);
+  });
+
+  test('missing a field (password) 401', async () => {
+    const res = await request(webapp).post('/login/').send('username=testuser');
+    expect(res.status).toEqual(401);
+  });
+
+  // Test for the /user endpoint
+  test('POST /user endpoint returns 201 and the response type is JSON', async () => {
+    const res = await request(webapp).post('/user').send('username=testuser&password=testuser');
+    expect(res.status).toBe(201);
+    expect(res.type).toBe('application/json');
+  });
+
+  test('POST /users endpoint returns 404 when missing username or password', async () => {
+    const res = await request(webapp).post('/user').send('username=testuser');
+    expect(res.status).toBe(404);
+    expect(res.type).toBe('application/json');
   });
 });

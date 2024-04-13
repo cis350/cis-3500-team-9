@@ -46,7 +46,6 @@ webapp.post('/login', (req, resp)=>{
   try{
     const token = authenticateUser(req.body.username, req.body.password);
     resp.status(201).json({apptoken: token});
-
   } catch(err){
     console.log('error login', err.message)
     resp.status(401).json({error: 'hey I am an error'});
@@ -66,7 +65,6 @@ webapp.get('/users', async (_req, resp)=>{
     } catch(err){
         // send the error code
         resp.status(400).json({message: 'There was an error'});
-
     }
 });
 

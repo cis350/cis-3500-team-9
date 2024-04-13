@@ -55,24 +55,6 @@ const getUser = async (userID) => {
   }
 };
 
-/**
-   *
-   * @param {*} userName
-   * @returns
-   */
-const getUserByUName = async (username) => {
-  try {
-    // get the db
-    const db = await getDB();
-    const result = await db.collection('users').findOne({ username });
-    // print the result
-    console.log(`User: ${JSON.stringify(result)}`);
-    return result;
-  } catch (err) {
-    console.log(`error: ${err.message}`);
-  }
-};
-
 // UPDATE a user given their ID
 const updateUser = async (userID, newUName) => {
   try {
@@ -114,7 +96,6 @@ module.exports = {
   addUser,
   getAllUsers,
   getUser,
-  getUserByUName,
   updateUser,
   deleteUser,
 };

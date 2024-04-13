@@ -6,6 +6,7 @@
 // require('dotenv').config({ path: '../.env' });
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const { get } = require('../controller/server');
 
 // DB location
 const dbURL = process.env.MONGODB_URI;
@@ -67,6 +68,7 @@ const getUsers = async () => {
 // export the functions
 module.exports = {
   connect,
-  closeMongoDBConnection,
   getDB,
+  closeMongoDBConnection,
+  getUsers,
 };

@@ -1,6 +1,6 @@
 const request = require('supertest');
-const { closeMongoDBConnection, connect } = require('../model/dbUtils');
 const webapp = require('../controller/server');
+const { closeMongoDBConnection, connect } = require('../model/dbUtils');
 
 // import test utilities function
 const {
