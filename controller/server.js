@@ -96,8 +96,8 @@ webapp.get('/user/:id', async (req, res) => {
  */
 webapp.post('/user', async (req, resp) =>{
     // parse the body
-    if(!req.body.name || !req.body.email || !req.body.major){
-        resp.status(404).json({message: 'missing name, email or major in the body'});
+    if(!req.body.username || !req.body.password){
+        resp.status(404).json({message: 'missing username or password in the body'});
         return;
     }
     // verify the session
