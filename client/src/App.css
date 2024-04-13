@@ -44,6 +44,7 @@ body {
   
   background: #f2f2f2;
   width: 100vw;
+  cursor: default;
 }
 
 input {
@@ -62,6 +63,7 @@ button {
 
   background-color: black;
   color: white;
+  cursor: pointer;
 }
 
 .inputForm {
@@ -78,4 +80,12 @@ button {
 #redirect-text {
   position: relative;
   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
 }
