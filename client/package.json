@@ -11,7 +11,9 @@
     "react-hook-form": "^7.51.3",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "styled-components": "^6.1.8",
+    "react-schedule-selector": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
