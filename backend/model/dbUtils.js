@@ -41,7 +41,7 @@ const getDB = async () => {
   if (!MongoConnection) {
     await connect();
   }
-  return MongoConnection.db();
+  return MongoConnection.db("AppData");
 };
 
 /**
