@@ -1,13 +1,12 @@
-const express = require('express');
-const userRoutes = require('./routes');
+/**
+ * This module will start the express server
+ */
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+// import the express app
+const webapp = require('./controller/server.js');
 
-app.use(express.json()); // for parsing application/json
-
-app.use('/api', userRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+const port = process.env.PORT || 3001;
+// start the web server
+webapp.listen(port, () =>{
+    console.log(`Server is running on http://localhost:${port}`);
+})
