@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../components/css/App.css';
+import { createNewUser } from '../api/users';
 
 const RegistrationForm = () => {
   const [user, setUser] = useState({
@@ -15,21 +16,43 @@ const RegistrationForm = () => {
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch('/api/user', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(user),
+  //     });
+  //     if (response.ok) {
+  //       alert('User registered successfully');
+  //     } else {
+  //       alert('Failed to register user');
+  //     }
+  //   } catch (error) {
+  //     console.error('Registration error:', error);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
+      const response = await createNewUser({
+        name: user.name,
+        email: user.email,
+        username: user.username, // Ensure this matches what the backend expects
+        password: user.password,
       });
-      if (response.ok) {
-        alert('User registered successfully');
+      alert('User registered successfully');
+    } catch (error) {
+      console.error('Registration error:', error);
+      // If the API call includes response information, log or display it here
+      if (error.response) {
+        console.error('Registration error response:', error.response);
+        alert(`Failed to register user: ${error.response.data.message}`);
       } else {
         alert('Failed to register user');
       }
-    } catch (error) {
-      console.error('Registration error:', error);
     }
   };
 

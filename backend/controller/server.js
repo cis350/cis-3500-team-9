@@ -144,7 +144,7 @@ webapp.delete('/user/:id', async (req, res) => {
     console.log('UPDATE a user');
     // parse the body of the request
     if (!req.body.password) {
-      res.status(400).json({ message: 'missing major' });
+      res.status(400).json({ message: 'missing password' });
       return;
     }
     try {
