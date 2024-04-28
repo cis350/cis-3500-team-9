@@ -4,16 +4,33 @@
   "description": "backend implemented with MongoDB and express",
   "main": "index.js",
   "scripts": {
-    "start": "node dbUtils.js",
-    "test": "jest --coverage"
+    "start": "node model/dbUtils.js",
+    "test": "jest --coverage",
+    "lint": " eslint --ignore-pattern *.test.js --ignore-pattern *.test.jsx "
   },
   "keywords": [],
   "author": "cis3500",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
-    "mongoose": "^8.2.3"
+    "supertest": "^6.3.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.0.2",
+    "@eslint/js": "^9.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^15.0.0"
   },
   "proxy": "http://localhost:3001",
   "repository": {
