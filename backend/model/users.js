@@ -86,6 +86,26 @@ const deleteUser = async (userID) => {
   }
 };
 
+/**
+ * Updates the user's schedule in the database.
+ * @param {string} userID - The MongoDB ObjectId string of the user.
+ * @param {Array} schedule - An array of ISO string dates representing the user's availability.
+ * @returns The result of the MongoDB update operation.
+ */
+ const updateUserSchedule = async (userID, schedule) => {
+  try {
+    const db = await getDB();
+    const result = await db.collection('users').updateOne(
+      { _id: new ObjectId(userID) }, // Convert string ID to ObjectId
+      { $set: { availability: schedule } } // Set the 'availability' field
+    );
+    return result;
+  } catch (err) {
+    console.error(`Error updating user schedule: ${err.message}`);
+    throw err;
+  }
+};
+
 async function main() {
   
 }
@@ -98,4 +118,5 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  updateUserSchedule,
 };

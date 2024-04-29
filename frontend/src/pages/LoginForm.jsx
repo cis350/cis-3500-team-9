@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../components/css/App.css';
 
 const LoginForm = () => {
@@ -15,21 +17,17 @@ const LoginForm = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-      });
-      if (response.ok) {
-        alert('Login successful');
-      } else {
-        alert('Failed to login');
-      }
+      const response = await axios.post('http://localhost:3010/login', credentials);
+      localStorage.setItem('app-token', response.data.apptoken); // Save the token to local storage
+      navigate('/schedule'); // Navigate to Scheduling page after successful login
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login failed:', error.response.data.error);
+      alert('Login failed: ' + error.response.data.error);
     }
   };
 

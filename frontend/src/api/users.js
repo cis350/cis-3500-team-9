@@ -42,38 +42,61 @@ export const getUserById = async (id) =>{
  * Create a new user
  */
 
-export const createNewUser = async (userObject) =>{
-    // always use try/catch in an async function
-    try{
-        // add the token to the header
+// export const createNewUser = async (userObject) =>{
+//     // always use try/catch in an async function
+//     try{
+//         // add the token to the header
+//         setHeaders();
+//         const response = await axios.post(`${rootURL}/user`,
+//             `username=${userObject.username}&password=${userObject.password}&availability=[]`);
+//         console.log("A response", response.data);
+//         return response.data.data;
+
+//     }catch (err){
+//         console.error('error', err.message);
+//     }
+// }
+
+export const createNewUser = async (userObject) => {
+    try {
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
         setHeaders();
-        const response = await axios.post(`${rootURL}/user`,
-            // `name=${userObject.name}&email=${userObject.email}&major=${userObject.major}`);
-            `username=${userObject.username}&password=${userObject.password}`);
+
+        const payload = {
+            username: userObject.username,
+            password: userObject.password,
+            availability: []
+        };
+
+        const response = await axios.post(`${rootURL}/user`, payload);
         console.log("A response", response.data);
         return response.data.data;
 
-    }catch (err){
+    } catch (err) {
         console.error('error', err.message);
+        throw err;
     }
 }
+
 
 /**
  * Create a new schedule
  */
 
-export const createSchedule = async (userObject) =>{
-    // always use try/catch in an async function
-    try{
-        // add the token to the header
-        setHeaders();
-        const response = await axios.post(`${rootURL}/user`,
-            // `name=${userObject.name}&email=${userObject.email}&major=${userObject.major}`);
-            `username=${userObject.username}&password=${userObject.password}`);
-        console.log("A response", response.data);
-        return response.data.data;
-
-    }catch (err){
-        console.error('error', err.message);
+ export const createSchedule = async (schedule) => {
+    setHeaders();
+    const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
+    try {
+        const response = await axios.post(`${rootURL}/user/schedule`, { schedule }, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Schedule update response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating schedule:', error.response ? error.response.data : error.message);
+        throw error;
     }
 }

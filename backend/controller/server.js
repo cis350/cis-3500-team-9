@@ -18,6 +18,7 @@ webapp.use(cors());
 
 // configure express to parse request bodies
 webapp.use(express.urlencoded({extended: true}));
+webapp.use(express.json()); // This line is necessary to parse JSON bodies
 
 // import the db function
 const users = require('../model/users');
@@ -105,6 +106,7 @@ webapp.post('/user', async (req, resp) =>{
           const newUser = {
             username: req.body.username,
             password: req.body.password,
+            availability: [],
           }
           const result = await users.addUser(newUser);
           resp.status(201).json({data: {id: result}});
@@ -156,6 +158,37 @@ webapp.delete('/user/:id', async (req, res) => {
     }
   });
 
+  // const jwt = require('jsonwebtoken');
+
+  // webapp.post('/user/availability', async (req, resp) => {
+  //     try {
+  //         const token = req.headers.authorization.split(' ')[1]; // Extract the token from the header
+  //         const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify and decode the token
+
+  //         const userId = decoded.userId; // Extract user ID embedded in the token
+  //         const availability = req.body.availability;
+
+  //         await updateUserAvailability(userId, availability);
+  //         resp.status(200).json({ message: 'Availability updated successfully' });
+  //     } catch (error) {
+  //         console.error('Error:', error.message);
+  //         resp.status(500).json({ error: error.message });
+  //     }
+  // });
+
+  webapp.post('/user/schedule', async (req, res) => {
+    const { schedule } = req.body;
+    // const userId = req.params.id;
+    const userId = 'vivyxiao'; // TEST!!!
+
+    try {
+        await users.updateUserSchedule(userId, schedule);
+        res.json({ message: 'Schedule updated successfully' });
+    } catch (error) {
+        console.error('Failed to update schedule:', error);
+        res.status(500).json({ error: 'Failed to update schedule' });
+    }
+});
 
 // export the webapp
 module.exports = webapp;
