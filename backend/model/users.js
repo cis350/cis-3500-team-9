@@ -38,20 +38,18 @@ const getAllUsers = async () => {
 };
 
 /**
-   * GET/READ a user given their ID
-   * @param {*} userID
-   * @returns
-   */
-const getUser = async (userID) => {
+ * GET/READ a user given their username
+ * @param {string} username - The username of the user to fetch
+ * @returns {Object|null} - The user document from the database or null if not found
+ */
+const getUserByUName = async (username) => {
   try {
-    // get the db
-    const db = await getDB();
-    const result = await db.collection('users').findOne({ _id: new ObjectId(userID) });
-    // print the result
-    console.log(`User: ${JSON.stringify(result)}`);
+    const db = await getDB(); // Assumes getDB() is a function that connects to your MongoDB database
+    const result = await db.collection('users').findOne({ username: username }); // Query the database for a user with the specified username
     return result;
   } catch (err) {
     console.log(`error: ${err.message}`);
+    return null;
   }
 };
 
@@ -87,6 +85,21 @@ const deleteUser = async (userID) => {
 };
 
 /**
+ * Verify a user's password against the hashed password in the database.
+ * @param {object} user - The user object from the database which includes the hashed password.
+ * @param {string} password - The plain text password entered by the user.
+ * @returns {boolean} true if the password matches, false otherwise.
+ */
+const verifyPassword = async (user, password) => {
+  try {
+    return password == user.password; // Compare the plaintext password with the hashed password
+  } catch (err) {
+    console.log('error verifying password', err.message);
+    return false;
+  }
+};
+
+/**
  * Updates the user's schedule in the database.
  * @param {string} userID - The MongoDB ObjectId string of the user.
  * @param {Array} schedule - An array of ISO string dates representing the user's availability.
@@ -115,8 +128,9 @@ main();
 module.exports = {
   addUser,
   getAllUsers,
-  getUser,
+  getUserByUName,
   updateUser,
   deleteUser,
+  verifyPassword,
   updateUserSchedule,
 };

@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 // import DB function
-const { getUserByUName } = require('../../model/users');
+const { getUserByUName, verifyPassword } = require('../../model/users');
 
 /**
  * Create a JWT containing the username
@@ -57,12 +57,30 @@ const verifyUser = async (token) => {
     return 3;
   }
 };
-/**
-const main = () =>{
-    const token = authenticateUser('cis3500');
-    verifyUser(token);
-}
-main();
-*/
 
-module.exports = { authenticateUser, verifyUser };
+/**
+ * Check user credentials against the database
+ * @param {string} username - the username entered by the user
+ * @param {string} password - the passwod entered by the user
+ * @returns 0 if the user is valid, the appropriate status code
+ */
+const verifyUserCredentials = async (username, password) => {
+  try {
+    const user = await getUserByUName(username);
+    if (!user) {
+      console.log('User not found');
+      return 2;
+    }
+    const isPasswordValid = await verifyPassword(user, password);
+    if (!isPasswordValid) {
+      console.log('Invalid password')
+      return 2;
+    }
+    return 0;
+  } catch (err) {
+    console.log('error', err.message);
+    return 3;
+  }
+};
+
+module.exports = { authenticateUser, verifyUser, verifyUserCredentials };

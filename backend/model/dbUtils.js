@@ -25,7 +25,7 @@ const connect = async () => {
       dbURL,
     )); // we return the entire connection, not just the DB
     // check that we are connected to the db
-    console.log(`connected to db: ${MongoConnection.db().databaseName}`);
+    console.log(`connected to db: ${MongoConnection.db("AppData").databaseName}`);
     return MongoConnection;
   } catch (err) {
     console.log(err.message);

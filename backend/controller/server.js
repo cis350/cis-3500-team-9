@@ -12,7 +12,7 @@ const cors = require('cors');
 const webapp = express();
 
 // import authentication functions
-const { authenticateUser, verifyUser } = require('./utils/auth')
+const { authenticateUser, verifyUser, verifyUserCredentials } = require('./utils/auth')
 // enable cors
 webapp.use(cors());
 
@@ -33,7 +33,7 @@ webapp.get('/', (_req, resp) =>{
  * Login endpoint
  * The name is used to log in
  */
-webapp.post('/login', (req, resp)=>{
+webapp.post('/login', async (req, resp)=>{
   // check that the name was sent in the body
   if(!req.body.username || req.body.username===''){
     resp.status(401).json({error: 'empty or missing username'});
@@ -44,12 +44,17 @@ webapp.post('/login', (req, resp)=>{
     return;
   }
   // authenticate the user
-  try{
+  try {
+    const isValidUser = await verifyUserCredentials(req.body.username, req.body.password);
+    if (isValidUser != 0) {
+      resp.status(401).json({ error: 'Invalid username or password' });
+      return;
+    }
     const token = authenticateUser(req.body.username, req.body.password);
-    resp.status(201).json({apptoken: token});
-  } catch(err){
-    console.log('error login', err.message)
-    resp.status(401).json({error: 'hey I am an error'});
+    resp.status(201).json({ apptoken: token });
+  } catch (err) {
+    console.log('error during login', err.message);
+    resp.status(500).json({ error: 'Internal server error' });
   }
 })
 
