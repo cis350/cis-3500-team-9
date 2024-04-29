@@ -8,6 +8,7 @@ import {
 import LoginForm from '../pages/LoginForm';
 import RegistrationForm from '../pages/RegistrationForm';
 import ResetPass from '../pages/ResetPass';
+import Scheduler from '../pages/Scheduler';
 
 // const LoginForm = () => {
 //   const [credentials, setCredentials] = useState({
@@ -83,6 +84,7 @@ function App() {
         <Route path="/login" element={<LoginForm/>}/>
         <Route path="/registration" element={<RegistrationForm/>}/>
         <Route path="/reset_password" element={<ResetPass/>}/>
+        <Route path="/schedule" element={<Scheduler/>}/>
       </Routes>
     </BrowserRouter>
   )
