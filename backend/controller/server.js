@@ -158,28 +158,11 @@ webapp.delete('/user/:id', async (req, res) => {
     }
   });
 
-  // const jwt = require('jsonwebtoken');
-
-  // webapp.post('/user/availability', async (req, resp) => {
-  //     try {
-  //         const token = req.headers.authorization.split(' ')[1]; // Extract the token from the header
-  //         const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify and decode the token
-
-  //         const userId = decoded.userId; // Extract user ID embedded in the token
-  //         const availability = req.body.availability;
-
-  //         await updateUserAvailability(userId, availability);
-  //         resp.status(200).json({ message: 'Availability updated successfully' });
-  //     } catch (error) {
-  //         console.error('Error:', error.message);
-  //         resp.status(500).json({ error: error.message });
-  //     }
-  // });
-
   webapp.post('/user/schedule', async (req, res) => {
     const { schedule } = req.body;
+    console.log(schedule);
     // const userId = req.params.id;
-    const userId = 'vivyxiao'; // TEST!!!
+    const userId = '6604cdc47b1675b05dce7c48'; // TEST!!! TODO: need to change this back to getting auth token from current logged in user
 
     try {
         await users.updateUserSchedule(userId, schedule);
