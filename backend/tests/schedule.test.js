@@ -62,23 +62,26 @@ describe('individual user - uploading schedule tests', () => {
 //     expect(res.status).toEqual(401);
 //   });
 
-  // Test for the /user endpoint
+  const blockSched = [
+    '2024-04-29T13:00:00.000Z',
+    '2024-04-29T14:00:00.000Z',
+    '2024-04-29T15:00:00.000Z',
+    '2024-04-29T16:00:00.000Z',
+    '2024-04-29T17:00:00.000Z',
+    '2024-04-29T18:00:00.000Z'
+  ];
+
+  const oneSched = ["2024-04-29T13:00:00.000Z"];
+  // Test for the /schedule endpoint
   test('POST /schedule endpoint success case - enters one available timeslot', async () => {
     // TODO
-    const res = await request(webapp).post('/schedule').send(["2024-04-29T13:00:00.000Z"]);
+    const res = await request(webapp).post('/schedule').send(`timeslot=${oneSched}$`);
     expect(res.status).toBe(201);
     expect(res.type).toBe('application/json');
   });
 
   test('POST /schedule endpoint success case - enters more than one available timeslot', async () => {
-    const res = await request(webapp).post('/schedule').send([
-      '2024-04-29T13:00:00.000Z',
-      '2024-04-29T14:00:00.000Z',
-      '2024-04-29T15:00:00.000Z',
-      '2024-04-29T16:00:00.000Z',
-      '2024-04-29T17:00:00.000Z',
-      '2024-04-29T18:00:00.000Z'
-    ]);
+    const res = await request(webapp).post('/schedule').send(`timeslot=${blockSched}$`);
     expect(res.status).toBe(201);
     expect(res.type).toBe('application/json');
   });
@@ -91,40 +94,26 @@ describe('individual user - uploading schedule tests', () => {
 
   test('GET /schedule endpoint - schedule contains one available timeslot', async () => {
     // submit schedule first
-    request(webapp).post('/schedule').send(["2024-04-29T13:00:00.000Z"]);
+    request(webapp).post('/schedule').send(`timeslot=${oneSched}$`);
 
     const res = await request(webapp).get('/schedule');
     expect(res.status).toBe(200);
     expect(res.type).toBe('application/json');
     const resArray = JSON.parse(res.text).data;
     //TODO
-    expect(resArray).toEqual(expect.arrayContaining(["2024-04-29T13:00:00.000Z"]));
+    expect(resArray).toEqual(expect.arrayContaining(oneSched));
   });
 
   test('GET /schedule endpoint - schedule contains more than one available timeslot', async () => {
     // submit schedule first
-    request(webapp).post('/schedule').send([
-      '2024-04-29T13:00:00.000Z',
-      '2024-04-29T14:00:00.000Z',
-      '2024-04-29T15:00:00.000Z',
-      '2024-04-29T16:00:00.000Z',
-      '2024-04-29T17:00:00.000Z',
-      '2024-04-29T18:00:00.000Z'
-    ]);
+    request(webapp).post('/schedule').send(`timeslot=${blockSched}$`);
 
     const res = await request(webapp).get('/schedule');
     expect(res.status).toBe(200);
     expect(res.type).toBe('application/json');
     const resArray = JSON.parse(res.text).data;
     //TODO
-    expect(resArray).toEqual(expect.arrayContaining([
-      '2024-04-29T13:00:00.000Z',
-      '2024-04-29T14:00:00.000Z',
-      '2024-04-29T15:00:00.000Z',
-      '2024-04-29T16:00:00.000Z',
-      '2024-04-29T17:00:00.000Z',
-      '2024-04-29T18:00:00.000Z'
-    ]));
+    expect(resArray).toEqual(expect.arrayContaining(blockSched));
   });
 
   test('GET /schedule endpoint - no available timeslots submitted', async () => {
