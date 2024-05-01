@@ -104,7 +104,7 @@ const verifyPassword = async (user, password) => {
  * @param {string} userID - The MongoDB ObjectId string of the user.
  * @returns {Array|null} An array of ISO string dates representing the user's availability, or null if no user is found.
  */
-const git = async (userID) => {
+const getUserSchedule = async (userID) => {
   try {
     const db = await getDB(); // Assuming getDB is a function that returns a connected MongoDB client
     const result = await db.collection('users').findOne(
