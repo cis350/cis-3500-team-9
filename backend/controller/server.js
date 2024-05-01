@@ -164,19 +164,34 @@ webapp.delete('/user/:id', async (req, res) => {
   });
 
   webapp.post('/user/schedule', async (req, res) => {
+    console.log('Received body:', req.body); // This will show you the full body received
     const { schedule } = req.body;
-    console.log(schedule);
-    // const userId = req.params.id;
-    const userId = '6604cdc47b1675b05dce7c48'; // TEST!!! TODO: need to change this back to getting auth token from current logged in user
+    console.log('Received schedule:', schedule);
+    const userId = '6604cdc47b1675b05dce7c48'; // Remember to secure this part later
 
     try {
-        await users.updateUserSchedule(userId, schedule);
-        res.json({ message: 'Schedule updated successfully' });
+        const result = await users.updateUserSchedule(userId, schedule);
+        res.status(201).json({ message: result });
     } catch (error) {
         console.error('Failed to update schedule:', error);
         res.status(500).json({ error: 'Failed to update schedule' });
     }
-});
+  });
+
+  webapp.get('/user/schedule', async (req, res) => {
+    try {
+        const userId = '6604cdc47b1675b05dce7c48';  // TODO: This should typically come from an auth token
+        const schedule = await users.getUserSchedule(userId);
+        if (!schedule || schedule.length === 0) {
+            res.status(200).json({data: []}); // Return an empty array if no schedule
+        } else {
+            res.status(200).json({data: schedule});
+        }
+    } catch (error) {
+        console.error('Failed to retrieve schedule:', error);
+        res.status(500).json({error: 'Internal server error'});
+    }
+  });
 
 // export the webapp
 module.exports = webapp;
