@@ -8,14 +8,8 @@ const Scheduler = () => {
     const [schedule, setSchedule] = useState([]);
     const navigate = useNavigate();
 
-    // const handleChange = (e) => {
-    //     console.log(e);
-    //     setSchedule([...e]);
-    // };
-
-    const handleChange = (e) => {   // TODO: handle multiple array structure
+    const handleChange = (e) => {
         console.log("Original schedule data:", e);
-        // Flatten the array using Array.prototype.flat()
         const flattenedSchedule = Array.isArray(e) ? e.flat() : e;
         console.log("Flattened schedule data:", flattenedSchedule);
         setSchedule([...flattenedSchedule]);
@@ -31,16 +25,28 @@ const Scheduler = () => {
     };
 
     return (
-        <div>
-            <ScheduleSelector
-            selection={schedule}
-            numDays={1}
-            minTime={8}
-            maxTime={22}
-            hourlyChunks={1}
-            onChange={handleChange}
-            />
-            <button type="submit" onClick={handleSubmit}>Submit Schedule</button>
+        <div style={{ display: 'flex' }}> 
+            <div>
+                <ScheduleSelector
+                selection={schedule}
+                numDays={1}
+                minTime={8}
+                maxTime={22}
+                hourlyChunks={1}
+                onChange={handleChange}
+                />
+                <button type="submit" onClick={handleSubmit}>Submit Schedule</button>
+            </div>
+            {(  // Conditionally render this div only if isSubmitted is true
+                <div style={{ marginLeft: '20px' }}>
+                    <h3>Schedule Timestamps</h3>
+                    <ul>
+                        {schedule.map((time, index) => (
+                            <li key={index}>{time.toString()}</li>  // Display each timestamp
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div> 
     );
 };

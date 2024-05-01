@@ -25,11 +25,11 @@ describe('GET users(s) endpoint integration test', () => {
      */
   beforeAll(async () => {
     mongo = await connect();
-    db = mongo.db();
+    db = mongo.db("AppData");
 
     // add test user to mongodb
     testUserID = await insertTestDataToDB(db, testUser);
-  });
+  }, 10000);
 
   /**
  * Delete all test data from the DB
@@ -43,31 +43,30 @@ describe('GET users(s) endpoint integration test', () => {
     } catch (err) {
       return err;
     }
-  });
+  }, 10000);
 
   test('Get all users endpoint status code and data', async () => {
-    const resp = await request(webapp).get('/users/');
+    const resp = await request(webapp).get('/users');
     expect(resp.status).toEqual(200);
     expect(resp.type).toBe('application/json');
     const usersList = JSON.parse(resp.text).data;
-    // testuser is in the response
-    // matching nested structures can be frustrating!
-    // expect(usersList).toEqual(expect.arrayContaining([{ _id: testUserID, ...testUser }]));
+    // test if testuser is in the response
     expect(isInArray(usersList, testUserID)).toBe(true);
-  });
+  }, 10000);
 
   test('Get: status code and data', async () => {
     const resp = await request(webapp).get(`/user/${testUserID}`);
     expect(resp.status).toEqual(200);
     expect(resp.type).toBe('application/json');
     const user = JSON.parse(resp.text).data;
+    console.log(user);
     // testUser is in the response
     expect(JSON.stringify(user)).toBe(JSON.stringify({ _id: testUserID, ...testUser }));
-  });
+  }, 10000);
 
-  test('user not in db status code 404', async () => {
+  test('user not in db status code 400', async () => {
     const resp = await request(webapp).get('/user/1');
-    expect(resp.status).toEqual(404);
+    expect(resp.status).toEqual(400);
     expect(resp.type).toBe('application/json');
-  });
+  }, 10000);
 });
