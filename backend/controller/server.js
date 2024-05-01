@@ -164,9 +164,7 @@ webapp.delete('/user/:id', async (req, res) => {
   });
 
   webapp.post('/user/schedule', async (req, res) => {
-    console.log('Received body:', req.body); // This will show you the full body received
     const { schedule } = req.body;
-    console.log('Received schedule:', schedule);
     const userId = '6604cdc47b1675b05dce7c48'; // Remember to secure this part later
 
     try {
