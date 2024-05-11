@@ -25,7 +25,6 @@ export const getAllUsers = async () =>{
 /**
  * Get a user by their id
  */
-
 export const getUserById = async (id) =>{
     // always use try/catch in an async function
     try{
@@ -41,22 +40,6 @@ export const getUserById = async (id) =>{
 /**
  * Create a new user
  */
-
-// export const createNewUser = async (userObject) =>{
-//     // always use try/catch in an async function
-//     try{
-//         // add the token to the header
-//         setHeaders();
-//         const response = await axios.post(`${rootURL}/user`,
-//             `username=${userObject.username}&password=${userObject.password}&availability=[]`);
-//         console.log("A response", response.data);
-//         return response.data.data;
-
-//     }catch (err){
-//         console.error('error', err.message);
-//     }
-// }
-
 export const createNewUser = async (userObject) => {
     try {
         axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -78,11 +61,9 @@ export const createNewUser = async (userObject) => {
     }
 }
 
-
 /**
  * Create a new schedule
  */
-
  export const createSchedule = async (schedule) => {
     setHeaders();
     const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
@@ -99,4 +80,18 @@ export const createNewUser = async (userObject) => {
         console.error('Error updating schedule:', error.response ? error.response.data : error.message);
         throw error;
     }
+}
+
+/**
+ * Fetch the friends list of a user
+ */
+export const fetchFriends = async () => {
+
+}
+
+/**
+ * Fetch the schedules of a user's friends
+ */
+export const fetchFriendSchedule = async () => {
+
 }
