@@ -194,5 +194,38 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
+webapp.post('/addFriend', authenticateToken, async (req, res) => {
+  const friendUsername = req.body.friendUsername;
+  const username = req.username; // Username from the token
+
+  try {
+      // Check if the friend's username exists
+      const friend = await users.getUserByUName(friendUsername);
+      if (!friend) {
+          return res.status(404).json({ error: 'Friend username does not exist' });
+      }
+
+      // Check if the user is trying to add themselves or if the friend is already added
+      const user = await users.getUserByUName(username);
+      if (friendUsername === username) {
+          return res.status(400).json({ error: "You cannot add yourself as a friend." });
+      }
+      if (user.friends.includes(friendUsername)) {
+          return res.status(400).json({ error: "This user is already your friend." });
+      }
+
+      // Add the friend's username to the current user's friends list
+      const result = await db.collection('users').updateOne(
+        { username },
+        { $push: { friends: friendUsername } } // Use $push to add to the array
+      );
+      res.status(200).json({ message: 'Friend added successfully', friends: user.friends });
+      return result;
+  } catch (error) {
+      console.error('Failed to add friend:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // export the webapp
 module.exports = webapp;

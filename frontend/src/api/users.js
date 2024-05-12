@@ -46,7 +46,8 @@ export const createNewUser = async (userObject) => {
         const payload = {
             username: userObject.username,
             password: userObject.password,
-            availability: []
+            availability: [],
+            friends: []
         };
 
         const response = await axios.post(`${rootURL}/user`, payload);
