@@ -196,7 +196,8 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
 
 webapp.post('/addFriend', authenticateToken, async (req, res) => {
   const friendUsername = req.body.friendUsername;
-  const username = req.username; // Username from the token
+  const username = req.username;
+  const userId = req.userId; // Username from the token
 
   try {
       // Check if the friend's username exists
@@ -215,12 +216,8 @@ webapp.post('/addFriend', authenticateToken, async (req, res) => {
       }
 
       // Add the friend's username to the current user's friends list
-      const result = await db.collection('users').updateOne(
-        { username },
-        { $push: { friends: friendUsername } } // Use $push to add to the array
-      );
+      users.updateUserFriends(userId, friendUsername);
       res.status(200).json({ message: 'Friend added successfully', friends: user.friends });
-      return result;
   } catch (error) {
       console.error('Failed to add friend:', error);
       res.status(500).json({ error: 'Internal server error' });

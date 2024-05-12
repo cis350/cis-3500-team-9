@@ -153,6 +153,20 @@ const getUserSchedule = async (userID) => {
   }
 };
 
+const updateUserFriends = async (userID, friend) => {
+  try {
+    const db = await getDB();
+    const result = await db.collection('users').updateOne(
+      { _id: new ObjectId(userID) },
+      { $push: { friends: friend } }
+    );
+    return result;
+  } catch (err) {
+    console.error(`Error updating user schedule: ${err.message}`);
+    throw err;
+  }
+};
+
 async function main() {
   
 }
@@ -168,5 +182,6 @@ module.exports = {
   verifyPassword,
   getUserSchedule,
   updateUserSchedule,
-  getUserIDByUName
+  getUserIDByUName,
+  updateUserFriends
 };
