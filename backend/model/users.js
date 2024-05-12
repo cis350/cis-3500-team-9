@@ -53,6 +53,21 @@ const getUserByUName = async (username) => {
   }
 };
 
+const getUserIDByUName = async (username) => {
+  try {
+    const db = await getDB(); // Assumes getDB() is a function that connects to your MongoDB database
+    const result = await db.collection('users').findOne({ username: username }, { projection: {_id: 1} }); // Query the database for the user ID of the specified username
+    if (!result) {
+      console.log(`No user found with username: ${username}`);
+      return null;
+    }
+    return result._id.toString(); // Return the user ID as a string
+  } catch (err) {
+    console.log(`Error fetching user by username: ${err.message}`);
+    return null;
+  }
+};
+
 // UPDATE a user given their ID
 const updateUser = async (userID, newUName) => {
   try {
@@ -152,5 +167,6 @@ module.exports = {
   deleteUser,
   verifyPassword,
   getUserSchedule,
-  updateUserSchedule
+  updateUserSchedule,
+  getUserIDByUName
 };

@@ -12,7 +12,7 @@ const cors = require('cors');
 const webapp = express();
 
 // import authentication functions
-const { authenticateUser, verifyUser, verifyUserCredentials } = require('./utils/auth')
+const { authenticateUser, verifyUser, verifyUserCredentials, authenticateToken } = require('./utils/auth')
 // enable cors
 webapp.use(cors());
 
@@ -50,7 +50,7 @@ webapp.post('/login', async (req, resp)=>{
       resp.status(401).json({ error: 'Invalid username or password' });
       return;
     }
-    const token = authenticateUser(req.body.username, req.body.password);
+    const token = authenticateUser(req.body.username);
     resp.status(201).json({ apptoken: token });
   } catch (err) {
     console.log('error during login', err.message);
@@ -163,33 +163,36 @@ webapp.delete('/user/:id', async (req, res) => {
     }
   });
 
-  webapp.post('/user/schedule', async (req, res) => {
-    const { schedule } = req.body;
-    const userId = '6604cdc47b1675b05dce7c48'; // Remember to secure this part later
+webapp.post('/user/schedule', authenticateToken, async (req, res) => {
+  const { schedule } = req.body;
+  console.log(schedule)
+  const userId = req.userId; // Get the user ID from the request object set by the middleware
+  console.log(userId);
 
-    try {
-        const result = await users.updateUserSchedule(userId, schedule);
-        res.status(201).json({ message: result });
-    } catch (error) {
-        console.error('Failed to update schedule:', error);
-        res.status(500).json({ error: 'Failed to update schedule' });
-    }
-  });
+  try {
+      const result = await users.updateUserSchedule(userId, schedule);
+      res.status(201).json({ message: result });
+  } catch (error) {
+      console.error('Failed to update schedule:', error);
+      res.status(500).json({ error: 'Failed to update schedule' });
+  }
+});
 
-  webapp.get('/user/schedule', async (req, res) => {
-    try {
-        const userId = '6604cdc47b1675b05dce7c48';  // TODO: This should typically come from an auth token
-        const schedule = await users.getUserSchedule(userId);
-        if (!schedule || schedule.length === 0) {
-            res.status(200).json({data: []}); // Return an empty array if no schedule
-        } else {
-            res.status(200).json({data: schedule});
-        }
-    } catch (error) {
-        console.error('Failed to retrieve schedule:', error);
-        res.status(500).json({error: 'Internal server error'});
-    }
-  });
+webapp.get('/user/schedule', authenticateToken, async (req, res) => {
+  const userId = req.userId; // Get the user ID from the request object
+
+  try {
+      const schedule = await users.getUserSchedule(userId);
+      if (!schedule || schedule.length === 0) {
+          res.status(200).json({ data: [] }); // Return an empty array if no schedule
+      } else {
+          res.status(200).json({ data: schedule });
+      }
+  } catch (error) {
+      console.error('Failed to retrieve schedule:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // export the webapp
 module.exports = webapp;
