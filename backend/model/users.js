@@ -2,7 +2,6 @@ const { ObjectId } = require('mongodb');
 const { closeMongoDBConnection, getDB, getUsers } = require('./dbUtils');
 
 /**
- *
  * @param {*} newUser
  * @returns
  */

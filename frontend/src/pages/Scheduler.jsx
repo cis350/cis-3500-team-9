@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../components/css/App.css';
 import ScheduleSelector from 'react-schedule-selector';
 import { createSchedule, fetchFriends, fetchFriendSchedule } from '../api/users';
 
@@ -59,7 +58,7 @@ const Scheduler = () => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
-            <div style={{ marginLeft: '20px' }}>
+            <div>
                 {friendsList.length > 0 ? friendsList.map(friend => (
                     <div key={friend.id}>
                         <label>
@@ -86,7 +85,7 @@ const Scheduler = () => {
                 <button type="submit" onClick={handleSubmit}>Submit Schedule</button>
             </div>
 
-            <div style={{ marginLeft: '20px' }}>
+            <div>
                 <h3>Schedule Timestamps</h3>
                 <ul>
                     {schedule.length > 0 ? schedule.map((time, index) => (
