@@ -17,7 +17,7 @@ export const getAllUsers = async () =>{
         console.log("all students", response.data);
         return response.data.data;
 
-    }catch (err){
+    } catch (err){
         console.error('error', err.message);
     }
 }
@@ -32,7 +32,7 @@ export const getUserById = async (id) =>{
         console.log("A user", response.data);
         return response.data.data;
 
-    }catch (err){
+    } catch (err){
         console.error('error', err.message);
     }
 }
@@ -82,8 +82,8 @@ export const createNewUser = async (userObject) => {
         throw error;
     }
 }
-
-export const fetchSchedule = async () => {
+ 
+ export const fetchSchedule = async () => {
     const token = localStorage.getItem('app-token');
     try {
         const response = await axios.get(`${rootURL}/user/schedule`, {
@@ -101,12 +101,41 @@ export const fetchSchedule = async () => {
  * Fetch the friends list of a user
  */
 export const fetchFriends = async () => {
-
+    const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
+    try {
+        const response = await axios.get(`${rootURL}/user/friends`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log("Friends list fetched successfully:", response.data);
+        return response.data.data;  // Assuming the data is structured { data: friendsList }
+    } catch (error) {
+        console.error('Error fetching friends list:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 }
 
 /**
  * Fetch the schedules of a user's friends
+ * @param {Array} friendIds - array of friend IDs
  */
-export const fetchFriendSchedule = async () => {
-
+export const fetchFriendSchedule = async (friendIds) => {
+    const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
+    try {
+        const requests = friendIds.map(id =>
+            axios.get(`${rootURL}/user/${id}/schedule`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+        );
+        const responses = await Promise.all(requests);
+        const schedules = responses.map(response => response.data.data); // Assuming each response is structured correctly
+        console.log("Schedules fetched successfully:", schedules);
+        return schedules; // Returns an array of schedule arrays
+    } catch (error) {
+        console.error('Error fetching schedules:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 }

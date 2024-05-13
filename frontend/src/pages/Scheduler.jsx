@@ -10,19 +10,6 @@ const Scheduler = () => {
     const [selectedFriends, setSelectedFriends] = useState([]);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const loadFriends = async () => {
-    //         try {
-    //             const friends = await fetchFriends();
-    //             setFriendsList(friends || []);
-    //         } catch (error) {
-    //             console.error('Failed to fetch friends:', error);
-    //             setFriendsList([]);  // Ensure state is always an array even on error.
-    //         }
-    //     };
-    //     loadFriends();
-    // }, []);
-
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -59,12 +46,11 @@ const Scheduler = () => {
         } else {
             setSchedule([]);
         }
-    };
 
     const handleChange = (newSchedule) => {
         setSchedule(newSchedule || []);
     };
-
+  
     const handleSubmit = async () => {
         try {
             await createSchedule(schedule);
@@ -103,6 +89,7 @@ const Scheduler = () => {
                 />
                 <button type="submit" onClick={handleSubmit}>Submit Schedule</button>
             </div>
+
 
             <div style={{ marginLeft: '20px' }}>
                 <h3>Schedule Timestamps</h3>

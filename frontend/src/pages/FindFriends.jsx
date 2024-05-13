@@ -16,9 +16,13 @@ const FindFriends = () => {
             const response = await axios.post(`${rootURL}/addFriend`, { friendUsername: username }, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            setFriends(response.data.friends);  // Update the friends list with the new array
+            if (response.data.friends) {
+                setFriends(response.data.friends);  // Update the friends list with the new array
+                setMessage('Friend added successfully!');
+            } else {
+                setMessage('Unexpected response from the server, please try again.');
+            }
             setUsername('');  // Clear the input field
-            setMessage('Friend added successfully!');
         } catch (error) {
             if (error.response) {
                 setMessage(error.response.data.error);
@@ -26,7 +30,7 @@ const FindFriends = () => {
                 setMessage('Failed to add friend.');
             }
         }
-    };
+    };    
 
     return (
         <div>
