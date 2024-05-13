@@ -178,21 +178,36 @@ webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
-webapp.get('/user/schedule', authenticateToken, async (req, res) => {
-  const userId = req.userId; // Get the user ID from the request object
+// webapp.get('/user/schedule', authenticateToken, async (req, res) => {
+//   const userId = req.userId; // Get the user ID from the request object
+//   console.log(userId);
+//   try {
+//       const schedule = await users.getUserSchedule(userId);
+//       console.log(schedule);
+//       if (!schedule || schedule.length === 0) {
+//           res.status(200).json({ data: [] }); // Return an empty array if no schedule
+//       } else {
+//           res.status(200).json({ data: schedule });
+//       }
+//   } catch (error) {
+//       console.error('Failed to retrieve schedule:', error);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
+webapp.get('/user/schedule', authenticateToken, async (req, res) => {
+  const userId = req.userId;
+  console.log('GET /user/schedule userId:', userId);
   try {
       const schedule = await users.getUserSchedule(userId);
-      if (!schedule || schedule.length === 0) {
-          res.status(200).json({ data: [] }); // Return an empty array if no schedule
-      } else {
-          res.status(200).json({ data: schedule });
-      }
+      console.log('User schedule:', schedule);
+      res.status(200).json({ data: schedule || [] });
   } catch (error) {
       console.error('Failed to retrieve schedule:', error);
       res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 webapp.post('/addFriend', authenticateToken, async (req, res) => {
   const friendUsername = req.body.friendUsername;

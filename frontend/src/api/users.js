@@ -82,6 +82,20 @@ export const createNewUser = async (userObject) => {
         throw error;
     }
 }
+ 
+ export const fetchSchedule = async () => {
+    const token = localStorage.getItem('app-token');
+    try {
+        const response = await axios.get(`${rootURL}/user/schedule`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        console.log("Schedule fetched successfully:", response.data);
+        return response.data.data || [];  // Ensure you always return an array
+    } catch (error) {
+        console.error('Error fetching schedule:', error.response ? error.response.data : error.message);
+        return [];  // Return an empty array on error to maintain consistency in your component state
+    }
+}
 
 /**
  * Fetch the friends list of a user

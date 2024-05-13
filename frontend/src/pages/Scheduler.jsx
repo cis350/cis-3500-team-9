@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../components/css/App.css';
 import ScheduleSelector from 'react-schedule-selector';
-import { createSchedule, fetchFriends, fetchFriendSchedule } from '../api/users';
+import { createSchedule, fetchFriends, fetchFriendSchedule, fetchSchedule } from '../api/users';
 
 const Scheduler = () => {
     const [schedule, setSchedule] = useState([]);
@@ -10,16 +11,21 @@ const Scheduler = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadFriends = async () => {
+        const loadData = async () => {
             try {
-                const friends = await fetchFriends();
+                const [friends, currentSchedule] = await Promise.all([
+                    fetchFriends(),
+                    fetchSchedule() // Fetch the current schedule
+                ]);
+                console.log("Fetched Friends:", friends);
+                console.log("Fetched Schedule:", currentSchedule);
                 setFriendsList(friends || []);
+                setSchedule(currentSchedule || []);
             } catch (error) {
-                console.error('Failed to fetch friends:', error);
-                setFriendsList([]);  // Ensure state is always an array even on error.
+                console.error('Failed to fetch data:', error);
             }
         };
-        loadFriends();
+        loadData();
     }, []);
 
     const handleFriendSelection = (friendId) => {
@@ -40,12 +46,11 @@ const Scheduler = () => {
         } else {
             setSchedule([]);
         }
-    };
 
     const handleChange = (newSchedule) => {
         setSchedule(newSchedule || []);
     };
-
+  
     const handleSubmit = async () => {
         try {
             await createSchedule(schedule);
@@ -58,7 +63,7 @@ const Scheduler = () => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
-            <div>
+            <div style={{ marginLeft: '20px' }}>
                 {friendsList.length > 0 ? friendsList.map(friend => (
                     <div key={friend.id}>
                         <label>
@@ -85,7 +90,8 @@ const Scheduler = () => {
                 <button type="submit" onClick={handleSubmit}>Submit Schedule</button>
             </div>
 
-            <div>
+
+            <div style={{ marginLeft: '20px' }}>
                 <h3>Schedule Timestamps</h3>
                 <ul>
                     {schedule.length > 0 ? schedule.map((time, index) => (
