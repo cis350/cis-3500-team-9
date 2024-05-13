@@ -22,6 +22,7 @@ webapp.use(express.json()); // This line is necessary to parse JSON bodies
 
 // import the db function
 const users = require('../model/users');
+const plans = require('../model/plans');
 
 // root endpoint route
 webapp.get('/', (_req, resp) =>{
@@ -238,6 +239,73 @@ webapp.post('/addFriend', authenticateToken, async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+webapp.get('/plan/:name', authenticateToken, async (req, res) => {
+  //const userId = req.userId;
+  //console.log('GET /user/schedule userId:', userId);
+  const planName = req.params.name;
+  console.log('GET planName', planName);
+  try {
+      const plan = await plans.getPlanByName(userId);
+      console.log('plan:', plan);
+      res.status(200).json({ data: plan || [] });
+  } catch (error) {
+      console.error('Failed to retrieve plan:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+webapp.post('/addPlan', authenticateToken, async (req, res) => {
+  const friendUsernames = req.body.friendUsernames;
+  const planName = req.name;
+  const time = req.body.time;
+  //const userId = req.userId; // Username from the token
+
+  try {
+      // Check if the username of each friend exists
+      for (const friendUsername of friendUsernames) {
+        const friend = await users.getUserByUName(friendUsername);
+        if (!friend) {
+            return res.status(404).json({ error: 'Friend username does not exist' });
+        }
+
+        /*
+        // Check if the user is trying to add themselves or if the friend is already added
+        const user = await users.getUserByUName(username);
+        if (friendUsername === username) {
+          continue;
+            //return res.status(400).json({ error: "You cannot add yourself as a friend." });
+        }
+        // if (user.friends.includes(friendUsername)) {
+        //     return res.status(400).json({ error: "This user is already your friend." });
+        // }
+
+        // Add the friend's username to the current user's friends list
+        users.updateUserFriends(userId, friendUsername);
+        res.status(200).json({ message: 'Friend added successfully', friends: user.friends });
+      */}
+
+      // Create new plan object
+      const newPlan = {
+        name: planName,
+        friends: friendUsernames,
+        time: time
+      }
+      // Add plan
+      plans.createPlan(newPlan);
+      const plan = plans.getPlanByName(planName);
+      res.status(201).json({ message: 'Plan created successfully', plan: plan });
+
+
+  } catch (error) {
+      console.error('Failed to create plan:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
 
 
 
