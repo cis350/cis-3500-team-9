@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/css/App.css';
 import ScheduleSelector from 'react-schedule-selector';
-import { createSchedule, fetchFriends, fetchFriendSchedule } from '../api/users';
+import { createSchedule, fetchFriends, fetchFriendSchedule, fetchSchedule } from '../api/users';
 
 const Scheduler = () => {
     const [schedule, setSchedule] = useState([]);
@@ -10,17 +10,35 @@ const Scheduler = () => {
     const [selectedFriends, setSelectedFriends] = useState([]);
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     const loadFriends = async () => {
+    //         try {
+    //             const friends = await fetchFriends();
+    //             setFriendsList(friends || []);
+    //         } catch (error) {
+    //             console.error('Failed to fetch friends:', error);
+    //             setFriendsList([]);  // Ensure state is always an array even on error.
+    //         }
+    //     };
+    //     loadFriends();
+    // }, []);
+
     useEffect(() => {
-        const loadFriends = async () => {
+        const loadData = async () => {
             try {
-                const friends = await fetchFriends();
+                const [friends, currentSchedule] = await Promise.all([
+                    fetchFriends(),
+                    fetchSchedule() // Fetch the current schedule
+                ]);
+                console.log("Fetched Friends:", friends);
+                console.log("Fetched Schedule:", currentSchedule);
                 setFriendsList(friends || []);
+                setSchedule(currentSchedule || []);
             } catch (error) {
-                console.error('Failed to fetch friends:', error);
-                setFriendsList([]);  // Ensure state is always an array even on error.
+                console.error('Failed to fetch data:', error);
             }
         };
-        loadFriends();
+        loadData();
     }, []);
 
     const handleFriendSelection = (friendId) => {

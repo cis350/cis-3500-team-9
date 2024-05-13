@@ -126,7 +126,7 @@ const getUserSchedule = async (userID) => {
       { _id: new ObjectId(userID) }, // Convert string ID to ObjectId
       { projection: { availability: 1, _id: 0 } } // Only fetch the 'availability' field
     );
-    return result ? result.availability : null; // Return the availability array if the user is found, otherwise null
+    return result ? result.availability : []; // Return the availability array if the user is found, otherwise null
   } catch (err) {
     console.error(`Error retrieving user schedule: ${err.message}`);
     throw err; // Rethrowing the error may be handled or logged at a higher level in your application

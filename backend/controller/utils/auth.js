@@ -21,7 +21,7 @@ const { getUserByUName, getUserIDByUName, verifyPassword } = require('../../mode
  */
 const authenticateUser = (username) => {
   try {
-    const token = jwt.sign({ username }, process.env.KEY, { expiresIn: '10m' });
+    const token = jwt.sign({ username }, process.env.KEY, { expiresIn: '20m' });
     console.log('token', token);
     return token;
   } catch (err) {
