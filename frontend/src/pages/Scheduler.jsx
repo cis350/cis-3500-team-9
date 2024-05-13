@@ -46,6 +46,7 @@ const Scheduler = () => {
         } else {
             setSchedule([]);
         }
+    }
 
     const handleChange = (newSchedule) => {
         setSchedule(newSchedule || []);
@@ -60,6 +61,7 @@ const Scheduler = () => {
             alert('Failed to submit schedule: ' + error.message);
         }
     };
+
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
