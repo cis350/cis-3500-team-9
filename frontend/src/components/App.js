@@ -9,6 +9,7 @@ import RegistrationForm from '../pages/RegistrationForm';
 import ResetPass from '../pages/ResetPass';
 import Scheduler from '../pages/Scheduler';
 import FindFriends from '../pages/FindFriends';
+import CreatePlan from '../pages/CreatePlan';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/reset_password" element={<ResetPass/>}/>
         <Route path="/schedule" element={<Scheduler/>}/>
         <Route path="/friends" element={<FindFriends/>}/>
+        <Route path="/plan" element={<CreatePlan/>}/>
       </Routes>
     </BrowserRouter>
   )
