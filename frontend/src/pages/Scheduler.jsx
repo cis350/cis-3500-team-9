@@ -46,6 +46,7 @@ const Scheduler = () => {
         } else {
             setSchedule([]);
         }
+    };
 
     const handleChange = (newSchedule) => {
         setSchedule(newSchedule || []);
