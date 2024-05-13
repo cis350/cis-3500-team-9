@@ -84,6 +84,7 @@ export const createNewUser = async (userObject) => {
 }
  
  export const fetchSchedule = async () => {
+    setHeaders();
     const token = localStorage.getItem('app-token');
     try {
         const response = await axios.get(`${rootURL}/user/schedule`, {
@@ -101,6 +102,7 @@ export const createNewUser = async (userObject) => {
  * Fetch the friends list of a user
  */
 export const fetchFriends = async () => {
+    // setHeaders();
     const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
     try {
         const response = await axios.get(`${rootURL}/user/friends`, {
@@ -109,7 +111,7 @@ export const fetchFriends = async () => {
             }
         });
         console.log("Friends list fetched successfully:", response.data);
-        return response.data.data;  // Assuming the data is structured { data: friendsList }
+        return response.data;  // Assuming the data is structured { data: friendsList }
     } catch (error) {
         console.error('Error fetching friends list:', error.response ? error.response.data : error.message);
         throw error;

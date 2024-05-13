@@ -56,7 +56,7 @@ const Scheduler = () => {
         try {
             await createSchedule(schedule);
             alert('Schedule submitted successfully!');
-            navigate('/dashboard'); // Redirect after submission, adjust as needed
+            navigate('/friends'); // Redirect after submission, adjust as needed
         } catch (error) {
             alert('Failed to submit schedule: ' + error.message);
         }

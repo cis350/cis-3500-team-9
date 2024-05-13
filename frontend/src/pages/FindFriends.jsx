@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {fetchFriends} from '../api/users';
+import { setHeaders } from '../api/utils';
+import { fetchFriends, fetchFriendSchedule, fetchSchedule } from '../api/users';
 
 const FindFriends = () => {
     const [username, setUsername] = useState('');
@@ -8,6 +9,40 @@ const FindFriends = () => {
     const [message, setMessage] = useState('');
 
     const rootURL = 'http://localhost:3010'; // Define the root URL of your API
+
+    // Function to fetch friends
+    const fetchFriend = async () => {
+        try {
+            const token = localStorage.getItem('app-token');
+            if (!token) {
+                setMessage('No token found. Please log in.');
+                return;
+            } else {
+                setMessage('proceed!!!!!]');
+            }
+            
+            const response = await axios.get(`${rootURL}/user/friends`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.data.friends) {
+                setFriends(response.data.friends);
+            } else {
+                setMessage('Unexpected response from the server, please try again.');
+            }
+        } catch (error) {
+            if (error.response) {
+                setMessage(error.response.data.error);
+            } else {
+                setMessage('Failed to fetch friends.');
+            }
+        }
+    };
+
+    // Fetch friends when the component loads
+    useEffect(() => {
+        fetchFriends();
+    }, []);
 
     const handleAddFriend = async (event) => {
         event.preventDefault();
