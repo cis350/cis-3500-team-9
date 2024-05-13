@@ -12,7 +12,7 @@ const cors = require('cors');
 const webapp = express();
 
 // import authentication functions
-const { authenticateUser, verifyUser, verifyUserCredentials } = require('./utils/auth')
+const { authenticateUser, verifyUser, verifyUserCredentials, authenticateToken } = require('./utils/auth')
 // enable cors
 webapp.use(cors());
 
@@ -50,7 +50,7 @@ webapp.post('/login', async (req, resp)=>{
       resp.status(401).json({ error: 'Invalid username or password' });
       return;
     }
-    const token = authenticateUser(req.body.username, req.body.password);
+    const token = authenticateUser(req.body.username);
     resp.status(201).json({ apptoken: token });
   } catch (err) {
     console.log('error during login', err.message);
@@ -163,33 +163,66 @@ webapp.delete('/user/:id', async (req, res) => {
     }
   });
 
-  webapp.post('/user/schedule', async (req, res) => {
-    const { schedule } = req.body;
-    const userId = '6604cdc47b1675b05dce7c48'; // Remember to secure this part later
+webapp.post('/user/schedule', authenticateToken, async (req, res) => {
+  const { schedule } = req.body;
+  console.log(schedule)
+  const userId = req.userId; // Get the user ID from the request object set by the middleware
+  console.log(userId);
 
-    try {
-        const result = await users.updateUserSchedule(userId, schedule);
-        res.status(201).json({ message: result });
-    } catch (error) {
-        console.error('Failed to update schedule:', error);
-        res.status(500).json({ error: 'Failed to update schedule' });
-    }
-  });
+  try {
+      const result = await users.updateUserSchedule(userId, schedule);
+      res.status(201).json({ message: result });
+  } catch (error) {
+      console.error('Failed to update schedule:', error);
+      res.status(500).json({ error: 'Failed to update schedule' });
+  }
+});
 
-  webapp.get('/user/schedule', async (req, res) => {
-    try {
-        const userId = '6604cdc47b1675b05dce7c48';  // TODO: This should typically come from an auth token
-        const schedule = await users.getUserSchedule(userId);
-        if (!schedule || schedule.length === 0) {
-            res.status(200).json({data: []}); // Return an empty array if no schedule
-        } else {
-            res.status(200).json({data: schedule});
-        }
-    } catch (error) {
-        console.error('Failed to retrieve schedule:', error);
-        res.status(500).json({error: 'Internal server error'});
-    }
-  });
+webapp.get('/user/schedule', authenticateToken, async (req, res) => {
+  const userId = req.userId; // Get the user ID from the request object
+
+  try {
+      const schedule = await users.getUserSchedule(userId);
+      if (!schedule || schedule.length === 0) {
+          res.status(200).json({ data: [] }); // Return an empty array if no schedule
+      } else {
+          res.status(200).json({ data: schedule });
+      }
+  } catch (error) {
+      console.error('Failed to retrieve schedule:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+webapp.post('/addFriend', authenticateToken, async (req, res) => {
+  const friendUsername = req.body.friendUsername;
+  const username = req.username;
+  const userId = req.userId; // Username from the token
+
+  try {
+      // Check if the friend's username exists
+      const friend = await users.getUserByUName(friendUsername);
+      if (!friend) {
+          return res.status(404).json({ error: 'Friend username does not exist' });
+      }
+
+      // Check if the user is trying to add themselves or if the friend is already added
+      const user = await users.getUserByUName(username);
+      if (friendUsername === username) {
+          return res.status(400).json({ error: "You cannot add yourself as a friend." });
+      }
+      if (user.friends.includes(friendUsername)) {
+          return res.status(400).json({ error: "This user is already your friend." });
+      }
+
+      // Add the friend's username to the current user's friends list
+      users.updateUserFriends(userId, friendUsername);
+      res.status(200).json({ message: 'Friend added successfully', friends: user.friends });
+  } catch (error) {
+      console.error('Failed to add friend:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // export the webapp
 module.exports = webapp;

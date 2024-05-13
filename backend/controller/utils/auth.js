@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 // import DB function
-const { getUserByUName, verifyPassword } = require('../../model/users');
+const { getUserByUName, getUserIDByUName, verifyPassword } = require('../../model/users');
 
 /**
  * Create a JWT containing the username
@@ -21,7 +21,7 @@ const { getUserByUName, verifyPassword } = require('../../model/users');
  */
 const authenticateUser = (username) => {
   try {
-    const token = jwt.sign({ username }, process.env.KEY, { expiresIn: '120s' });
+    const token = jwt.sign({ username }, process.env.KEY, { expiresIn: '10m' });
     console.log('token', token);
     return token;
   } catch (err) {
@@ -83,4 +83,34 @@ const verifyUserCredentials = async (username, password) => {
   }
 };
 
-module.exports = { authenticateUser, verifyUser, verifyUserCredentials };
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).send('No token provided.');
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.KEY);
+    req.username = decoded.username; // Attach the username from the token to the request object
+    console.log('Decoded username:', req.username);
+
+    // Perform database lookup to get user ID
+    const userId = await getUserIDByUName(req.username); // Assuming getUserByUName returns the user's _id as a string
+    if (!userId) {
+      return res.status(404).send('User not found.');
+    }
+
+    req.userId = userId; // Attach the user ID to the request object
+    next();
+  } catch (err) {
+    console.log('Token verification error:', err);
+    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+      return res.status(403).send('Invalid or expired token.');
+    }
+    return res.status(500).send('Internal server error.');
+  }
+};
+
+
+module.exports = { authenticateUser, verifyUser, verifyUserCredentials, authenticateToken };
