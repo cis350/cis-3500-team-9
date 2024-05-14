@@ -179,23 +179,6 @@ webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
-// webapp.get('/user/schedule', authenticateToken, async (req, res) => {
-//   const userId = req.userId; // Get the user ID from the request object
-//   console.log(userId);
-//   try {
-//       const schedule = await users.getUserSchedule(userId);
-//       console.log(schedule);
-//       if (!schedule || schedule.length === 0) {
-//           res.status(200).json({ data: [] }); // Return an empty array if no schedule
-//       } else {
-//           res.status(200).json({ data: schedule });
-//       }
-//   } catch (error) {
-//       console.error('Failed to retrieve schedule:', error);
-//       res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
 webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   const userId = req.userId;
   console.log('GET /user/schedule userId:', userId);
@@ -209,6 +192,25 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
+// GET endpoint to retrieve user's friends
+webapp.get('/user/friends', authenticateToken, async (req, res) => {
+  const userId = req.userId;
+  console.log('GET /user/friends userId:', userId);
+
+  if (!userId) {
+    console.error('User ID not provided');
+    return res.status(400).json({ error: 'User ID not provided' });
+  }
+
+  try {
+    const friends = await getUserFriends(userId);
+    console.log('User friends:', friends);
+    res.status(200).json({ friends });
+  } catch (error) {
+    console.error('Failed to retrieve friends list:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 webapp.post('/addFriend', authenticateToken, async (req, res) => {
   const friendUsername = req.body.friendUsername;
@@ -257,9 +259,8 @@ webapp.get('/plan/:name', authenticateToken, async (req, res) => {
 
 webapp.post('/addPlan', authenticateToken, async (req, res) => {
   const friendUsernames = req.body.friendUsernames;
-  const planName = req.name;
+  const planName = req.body.name;
   const time = req.body.time;
-  //const userId = req.userId; // Username from the token
 
   try {
       // Check if the username of each friend exists
@@ -268,22 +269,7 @@ webapp.post('/addPlan', authenticateToken, async (req, res) => {
         if (!friend) {
             return res.status(404).json({ error: 'Friend username does not exist' });
         }
-
-        /*
-        // Check if the user is trying to add themselves or if the friend is already added
-        const user = await users.getUserByUName(username);
-        if (friendUsername === username) {
-          continue;
-            //return res.status(400).json({ error: "You cannot add yourself as a friend." });
-        }
-        // if (user.friends.includes(friendUsername)) {
-        //     return res.status(400).json({ error: "This user is already your friend." });
-        // }
-
-        // Add the friend's username to the current user's friends list
-        users.updateUserFriends(userId, friendUsername);
-        res.status(200).json({ message: 'Friend added successfully', friends: user.friends });
-      */}
+      }
 
       // Create new plan object
       const newPlan = {
@@ -302,12 +288,6 @@ webapp.post('/addPlan', authenticateToken, async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
-
-
-
 
 // export the webapp
 module.exports = webapp;

@@ -133,6 +133,26 @@ const getUserSchedule = async (userID) => {
 };
 
 /**
+ * Retrieves the user's schedule from the database.
+ * @param {string} userID - The MongoDB ObjectId string of the user.
+ * @returns {Array|null} An array of ISO string dates representing the user's availability, or null if no user is found.
+ */
+ const getUserFriends = async (userID) => {
+  try {
+    const db = await getDB(); // Assuming getDB is a function that returns a connected MongoDB client
+    const result = await db.collection('users').findOne(
+      { _id: new ObjectId(userID) }, // Convert string ID to ObjectId
+      { projection: { friends: 1, _id: 0 } } // Only fetch the 'availability' field
+    );
+    console.log(result);
+    return result ? result.friends : []; // Return the availability array if the user is found, otherwise null
+  } catch (err) {
+    console.error(`Error retrieving user schedule: ${err.message}`);
+    throw err; // Rethrowing the error may be handled or logged at a higher level in your application
+  }
+};
+
+/**
  * Updates the user's schedule in the database.
  * @param {string} userID - The MongoDB ObjectId string of the user.
  * @param {Array} schedule - An array of ISO string dates representing the user's availability.
@@ -195,5 +215,6 @@ module.exports = {
   updateUserSchedule,
   getUserIDByUName,
   updateUserFriends,
-  createPlan
+  createPlan,
+  getUserFriends
 };
