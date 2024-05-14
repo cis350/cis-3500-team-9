@@ -9,6 +9,19 @@ const FindFriends = () => {
 
     const rootURL = 'http://localhost:3010'; // Define the root URL of your API
 
+    useEffect(() => {
+        const loadFriends = async () => {
+            try {
+                const friends = await fetchFriends();  // Fetch current friends list
+                setFriends(friends || []);  // Set directly as fetchedFriends should already be an array
+            } catch (error) {
+                console.error('Failed to fetch friends:', error);
+            }
+        };
+    
+        loadFriends();
+    }, []); // Empty dependency array to run only once on mount    
+
     const handleAddFriend = async (event) => {
         event.preventDefault();
         try {
@@ -16,13 +29,9 @@ const FindFriends = () => {
             const response = await axios.post(`${rootURL}/addFriend`, { friendUsername: username }, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (response.data.friends) {
-                setFriends(response.data.friends);  // Update the friends list with the new array
-                setMessage('Friend added successfully!');
-            } else {
-                setMessage('Unexpected response from the server, please try again.');
-            }
+            setFriends(response.data.friends);  // Update the friends list with the new array
             setUsername('');  // Clear the input field
+            setMessage('Friend added successfully!');
         } catch (error) {
             if (error.response) {
                 setMessage(error.response.data.error);
@@ -30,7 +39,7 @@ const FindFriends = () => {
                 setMessage('Failed to add friend.');
             }
         }
-    };    
+    };
 
     return (
         <div>
