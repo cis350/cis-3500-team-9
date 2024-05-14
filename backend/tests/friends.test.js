@@ -15,13 +15,16 @@ describe('individual user - adding friends tests', () => {
        * If beforeAll is undefined
        * inside .eslintrc.js, add 'jest' to the 'env' key
        */
+  let token;
   beforeAll(async () => {
     // connect to the db
     mongo = await connect();
 
     // log the user in
-    await request(webapp).post('/login').send(`username=${testUser.username}&password=${testUser.password}`);
+    const res = await request(webapp).post('/login').send(`username=${testUser.username}&password=${testUser.password}`);
     //console.log('response', response.text);
+    token = res.body.token;
+    //token = localStorage.getItem('app-token');
   });
 
   /**
@@ -56,7 +59,7 @@ const friendList = [
 
 const newPlan = {
     name: "testPlan",
-    friends: friendList,
+    friendsUsernames: friendList,
     time: "5:00 PM"
 }
 
@@ -75,59 +78,49 @@ const newPlan = {
 //   "2024-05-01T00:00:00.000Z"
 // ];
 
+const friendUsername1 = "vivyxiao";
+const friendUsername2 = "chencaro";
+
   // Test for the /schedule endpoint
-  test('POST /schedule endpoint success case - enters one available timeslot', async () => {
-    // TODO
-    const res = await request(webapp).post('/plan').send({ schedule: oneSched });
-    expect(res.status).toBe(201);
-    expect(res.type).toBe('application/json');
+  test('POST /addFriend endpoint success case - adds one friend', async () => {
+    const res = await request(webapp).post('/addFriend').send({ friendUsername: friendUsername1 }, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
   });
 
-  test('POST /schedule endpoint success case - enters more than one available timeslot', async () => {
-    const res = await request(webapp).post('/user/schedule').send({ schedule: blockSched });
-    expect(res.status).toBe(201);
-    expect(res.type).toBe('application/json');
+  test('POST /addFriend endpoint success case - adds more than one friend', async () => {
+    let res = await request(webapp).post('/addFriend').send({ friendUsername: friendUsername1 });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
+
+    res = await request(webapp).post('/addFriend').send({ friendUsername: friendUsername2 });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
   });
 
-  test('POST /schedule endpoint success case - submits no available timeslots', async () => {
-    const res = await request(webapp).post('/user/schedule').send([]);
-    expect(res.status).toBe(201);
-    expect(res.type).toBe('application/json');
+
+  test('POST /addFriend endpoint tries to add self - failure case', async () => {
+    const res = await request(webapp).post('/addFriend').send({ friendUsername: testUser.username });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
   });
 
-  // test('GET /schedule endpoint - schedule contains one available timeslot', async () => {
-  //   // submit schedule first
-  //   console.log('Send schedule:', oneSched);
-  //   request(webapp).post('/user/schedule').send({ schedule: oneSched })
-  //     .set('Content-Type', 'application/json')
-  //     .set('Accept', 'application/json');
+  test('POST /addFriend endpoint tries to add friend twice - failure case', async () => {
+    let res = await request(webapp).post('/addFriend').send({ friendUsername: friendUsername1 });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
 
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(oneSched));
-  // });
+    res = await request(webapp).post('/addFriend').send({ friendUsername: friendUsername1 });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
+  });
 
-  // test('GET /schedule endpoint - schedule contains more than one available timeslot', async () => {
-  //   // submit schedule first
-  //   request(webapp).post('/user/schedule').send({ schedule: blockSched });
 
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(blockSched));
-  // });
-
-  // test('GET /schedule endpoint - no available timeslots submitted', async () => {
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(201);
-  //   expect(res.type).toBe('application/json');
-
-  //   const resArray = JSON.parse(res.text).data;
-  //   expect(resArray).toEqual(expect.arrayContaining([]));
-  // });
+  test('POST /addFriend endpoint tries to add friend that doesnt exist failure case', async () => {
+    const res = await request(webapp).post('/addFriend').send({ friendUsername: "notInDB" });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
+  });
 });
