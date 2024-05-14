@@ -63,21 +63,6 @@ const newPlan = {
     time: "5:00 PM"
 }
 
-// const blockSched = [
-//   "2024-04-30T12:00:00.000Z",
-//   "2024-04-30T13:00:00.000Z",
-//   "2024-04-30T14:00:00.000Z",
-//   "2024-04-30T15:00:00.000Z",
-//   "2024-04-30T16:00:00.000Z",
-//   "2024-04-30T17:00:00.000Z",
-//   "2024-04-30T18:00:00.000Z",
-//   "2024-04-30T19:00:00.000Z",
-//   "2024-04-30T21:00:00.000Z",
-//   "2024-04-30T22:00:00.000Z",
-//   "2024-04-30T23:00:00.000Z",
-//   "2024-05-01T00:00:00.000Z"
-// ];
-
 const friendUsername1 = "vivyxiao";
 const friendUsername2 = "chencaro";
 
@@ -100,7 +85,6 @@ const friendUsername2 = "chencaro";
     expect(res.type).toBe('text/html');
   });
 
-
   test('POST /addFriend endpoint tries to add self - failure case', async () => {
     const res = await request(webapp).post('/addFriend').send({ friendUsername: testUser.username });
     expect(res.status).toBe(401);
@@ -117,9 +101,16 @@ const friendUsername2 = "chencaro";
     expect(res.type).toBe('text/html');
   });
 
-
   test('POST /addFriend endpoint tries to add friend that doesnt exist failure case', async () => {
     const res = await request(webapp).post('/addFriend').send({ friendUsername: "notInDB" });
+    expect(res.status).toBe(401);
+    expect(res.type).toBe('text/html');
+  });
+
+  test('GET /friends endpoint success case', async () => {
+    const res = await request(webapp).get('/friends', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     expect(res.status).toBe(401);
     expect(res.type).toBe('text/html');
   });

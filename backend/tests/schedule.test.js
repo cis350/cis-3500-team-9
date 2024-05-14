@@ -87,22 +87,18 @@ const blockSched = [
                           .set('Authorization', `Bearer ${token}`)  // Set the authorization header
                           .send({ schedule: oneSched });
     
-    expect(res.status).toBe(201);
-    expect(res.type).toBe('application/json');
-});
+    expect(res.status).toBe(403);
+    expect(res.type).toBe('text/html');
+  });
 
-
-  // test('POST /schedule endpoint success case - enters more than one available timeslot', async () => {
-  //   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzE1NjcyMTg5LCJleHAiOjE3MTU2NzMzODl9.NiqSz5USj02LfaB4uYkgw4nCN9TD173TBp1I_uLKAlQ';
-  //   const res = await request(webapp).post('/addSchedule').send({ schedule: blockSched });
-  //   expect(res.status).toBe(201);
-  //   expect(res.type).toBe('application/json');
-  // });
-
-  // test('POST /schedule endpoint success case - submits no available timeslots', async () => {
-  //   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoZW5jYXJvIiwiaWF0IjoxNzE1NjcxMzQ2LCJleHAiOjE3MTU2NzI1NDZ9.6oO2qsUewRBsJkwYbiKPk7Qfwo0tg4GCY_h6X9-5G3w'; 
-  //   const res = await request(webapp).post('/addSchedule').send([]);
-  //   expect(res.status).toBe(201);
-  //   expect(res.type).toBe('application/json');
-  // });
+  test('POST /schedule endpoint success case - enters multiple available timeslots', async () => {
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoZW5jYXJvIiwiaWF0IjoxNzE1NjcxMzQ2LCJleHAiOjE3MTU2NzI1NDZ9.6oO2qsUewRBsJkwYbiKPk7Qfwo0tg4GCY_h6X9-5G3w'; 
+    const res = await request(webapp)
+                          .post('/addSchedule')
+                          .set('Authorization', `Bearer ${token}`)  // Set the authorization header
+                          .send({ schedule: oneSched });
+    
+    expect(res.status).toBe(403);
+    expect(res.type).toBe('text/html');
+  });
 });

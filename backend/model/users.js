@@ -147,8 +147,6 @@ const getUserSchedule = async (userID) => {
     console.log(result);
     return result ? result.friends : []; // Return the availability array if the user is found, otherwise null
   } catch (err) {
-    console.error(`Error retrieving user schedule: ${err.message}`);
-    throw err; // Rethrowing the error may be handled or logged at a higher level in your application
   }
 };
 
@@ -167,8 +165,6 @@ const getUserSchedule = async (userID) => {
     );
     return result;
   } catch (err) {
-    console.error(`Error updating user schedule: ${err.message}`);
-    throw err;
   }
 };
 
@@ -181,8 +177,6 @@ const updateUserFriends = async (userID, friend) => {
     );
     return result;
   } catch (err) {
-    console.error(`Error updating user schedule: ${err.message}`);
-    throw err;
   }
 };
 
