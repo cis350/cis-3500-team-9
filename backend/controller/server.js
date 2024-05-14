@@ -113,7 +113,7 @@ webapp.post('/user', async (req, resp) =>{
             username: req.body.username,
             password: req.body.password,
             availability: [],
-            friends: [],
+            friends: []
           }
           const result = await users.addUser(newUser);
           resp.status(201).json({data: {id: result}});

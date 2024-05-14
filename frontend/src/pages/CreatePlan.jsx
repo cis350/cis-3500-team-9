@@ -5,6 +5,7 @@ import {fetchFriends} from '../api/users';
 import { NavLink } from 'react-router-dom';
 
 const CreatePlan = () => {
+    const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: [] });
 
