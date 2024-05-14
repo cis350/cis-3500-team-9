@@ -61,37 +61,4 @@ describe('DB Utils', () => {
         const planInDb = await db.collection('plans').findOne({ name: 'newPlan' });
         expect(planInDb).toEqual(newPlan);
     });
-
-    // test('POST /user/schedule endpoint success case - enters one available timeslot', async () => {
-    //     const oneSched = { schedule: ['2024-05-14T14:45:50.890655+00:00'] };
-    //     const res = await request(app)
-    //         .post('/user/schedule')
-    //         .set('Authorization', `Bearer ${token}`)
-    //         .send(oneSched);
-
-    //     expect(res.status).toBe(201);
-    //     expect(res.type).toBe('application/json');
-    // });
-
-    // test('POST /user/schedule endpoint success case - enters more than one available timeslot', async () => {
-    //     const blockSched = { schedule: ['2024-05-14T14:45:50.890655+00:00', '2024-05-15T14:45:50.890655+00:00'] };
-    //     const res = await request(app)
-    //         .post('/user/schedule')
-    //         .set('Authorization', `Bearer ${token}`)
-    //         .send(blockSched);
-
-    //     expect(res.status).toBe(201);
-    //     expect(res.type).toBe('application/json');
-    // });
-
-    // test('POST /user/schedule endpoint success case - submits no available timeslots', async () => {
-    //     const noSched = { schedule: [] };
-    //     const res = await request(app)
-    //         .post('/user/schedule')
-    //         .set('Authorization', `Bearer ${token}`)
-    //         .send(noSched);
-
-    //     expect(res.status).toBe(201);
-    //     expect(res.type).toBe('application/json');
-    // });
 });
