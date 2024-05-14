@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import axios from 'axios';
-import {fetchFriends} from '../api/users';
+import { fetchFriends } from '../api/users';
 
 const FindFriends = () => {
     const [username, setUsername] = useState('');
@@ -43,6 +44,12 @@ const FindFriends = () => {
 
     return (
         <div>
+            <nav style={{ marginBottom: '20px' }}>
+                <NavLink to="/login" style={{ marginRight: '10px' }}>Login</NavLink>
+                <NavLink to="/schedule" style={{ marginRight: '10px' }}>Schedule</NavLink>
+                <NavLink to="/plan">Plan</NavLink>
+            </nav>
+
             <form onSubmit={handleAddFriend}>
                 <input
                     type="text"
