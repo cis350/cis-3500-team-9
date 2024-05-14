@@ -4,7 +4,6 @@ import '../components/css/App.css';
 import {fetchFriends} from '../api/users';
 
 const CreatePlan = () => {
-    const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
     const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: [] });
 

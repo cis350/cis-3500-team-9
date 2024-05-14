@@ -56,7 +56,6 @@ const LoginForm = () => {
         </div>
         <div id='redirect-text'>
           <p>Don't have an account? <a href='registration'>Create one</a></p>
-          <a href='/reset_password'>Reset password</a>
         </div>
         
       </body>

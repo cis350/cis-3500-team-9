@@ -23,8 +23,6 @@ const RegistrationForm = () => {
     e.preventDefault();
     try {
       const response = await createNewUser({
-        // name: user.name,
-        // email: user.email,
         username: user.username,
         password: user.password,
       });
@@ -47,22 +45,6 @@ const RegistrationForm = () => {
       <body>
         <h2>Sign up for when2eat</h2>
         <div class="inputForm">
-          <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={user.name}
-              onChange={handleChange}
-              required
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={user.email}
-            onChange={handleChange}
-            required
-          />
           <input
             type="text"
             name="username"

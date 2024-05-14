@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import LoginForm from '../pages/LoginForm';
 import RegistrationForm from '../pages/RegistrationForm';
-import ResetPass from '../pages/ResetPass';
 import Scheduler from '../pages/Scheduler';
 import FindFriends from '../pages/FindFriends';
 import CreatePlan from '../pages/CreatePlan';
@@ -18,7 +17,6 @@ function App() {
       <Route path="/" element={<LoginForm/>}/>
         <Route path="/login" element={<LoginForm/>}/>
         <Route path="/registration" element={<RegistrationForm/>}/>
-        <Route path="/reset_password" element={<ResetPass/>}/>
         <Route path="/schedule" element={<Scheduler/>}/>
         <Route path="/friends" element={<FindFriends/>}/>
         <Route path="/plan" element={<CreatePlan/>}/>
