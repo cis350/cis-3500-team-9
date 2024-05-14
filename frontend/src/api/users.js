@@ -103,13 +103,13 @@ export const createNewUser = async (userObject) => {
 export const fetchFriends = async () => {
     const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
     try {
-        const response = await axios.get(`${rootURL}/user/friends`, {
+        const response = await axios.get(`${rootURL}/friends`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
         console.log("Friends list fetched successfully:", response.data);
-        return response.data.data;  // Assuming the data is structured { data: friendsList }
+        return response.data.friends;  // Assuming the data is structured { data: friendsList }
     } catch (error) {
         console.error('Error fetching friends list:', error.response ? error.response.data : error.message);
         throw error;

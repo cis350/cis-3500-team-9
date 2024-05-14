@@ -193,9 +193,9 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
 });
 
 // GET endpoint to retrieve user's friends
-webapp.get('/user/friends', authenticateToken, async (req, res) => {
+webapp.get('/friends', authenticateToken, async (req, res) => {
   const userId = req.userId;
-  console.log('GET /user/friends userId:', userId);
+  console.log('GET /friends userId:', userId);
 
   if (!userId) {
     console.error('User ID not provided');
@@ -203,7 +203,7 @@ webapp.get('/user/friends', authenticateToken, async (req, res) => {
   }
 
   try {
-    const friends = await getUserFriends(userId);
+    const friends = await users.getUserFriends(userId);
     console.log('User friends:', friends);
     res.status(200).json({ friends });
   } catch (error) {

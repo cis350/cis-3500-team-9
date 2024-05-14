@@ -1,40 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../components/css/App.css';
+import {fetchFriends} from '../api/users';
 
 const CreatePlan = () => {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
-    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: ['vivyxiao','chencaro'] });
+    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: [] });
 
     const rootURL = 'http://localhost:3010'; // Define the root URL of your API
 
     useEffect(() => {
-        const fetchFriends = async () => {
+        const loadFriends = async () => {
             try {
-                const token = localStorage.getItem('app-token');
-                if (!token) {
-                    alert('No token found. Please log in.');
-                    return;
-                }
-                console.log("here1");
-                const response = await axios.get(`${rootURL}/user/friends`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (response.data.friends) {
-                    console.log("here");
-                    setFriends(response.data);
-                } else {
-                    alert('Unexpected response from the server, please try again.');
-                }
+                const friends = await fetchFriends();  // Fetch current friends list
+                setFriends(friends || []);  // Set directly as fetchedFriends should already be an array
             } catch (error) {
-                console.error('Error fetching friends:', error);
-                alert('Failed to fetch friends.');
+                console.error('Failed to fetch friends:', error);
             }
         };
 
-        fetchFriends();
+        loadFriends();
     }, []);
 
     const handleSubmit = async (event) => {
