@@ -4,6 +4,8 @@
 const testUser = {
     username: 'testuser',
     password: 'cis3500',
+    availability: [],
+    friends: []
   };
   /**
    * Adds a test user to the DB
@@ -13,6 +15,7 @@ const testUser = {
    */
   const insertTestDataToDB = async (db, testData) => {
     const result = await db.collection('users').insertOne(testData);
+    console.log("successfully inserted test user");
     return result.insertedId;
   };
   /**

@@ -11,22 +11,15 @@ const getPlanByName = async (planName) => {
       const db = await getDB(); // Assumes getDB() is a function that connects to your MongoDB database
       const result = await db.collection('plans').findOne({ name: planName });
       return result;
-    } catch (err) {
-      console.log(`error: ${err.message}`);
-      return null;
-    }
+    } catch (err) {}
   };
 
 const createPlan = async (newPlan) => {
   try {
     const db = await getDB();
     const result = await db.collection('plans').insertOne(newPlan);
-    console.log(`New plan created with id: ${result.insertedId}`);
     return result;
-  } catch (err) {
-    console.error(`Error creating a plan: ${err.message}`);
-    throw err;
-  }
+  } catch (err) {}
 };
 
 async function main() {

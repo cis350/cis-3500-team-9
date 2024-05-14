@@ -54,7 +54,6 @@ webapp.post('/login', async (req, resp)=>{
     const token = authenticateUser(req.body.username);
     resp.status(201).json({ apptoken: token });
   } catch (err) {
-    console.log('error during login', err.message);
     resp.status(500).json({ error: 'Internal server error' });
   }
 })
@@ -79,10 +78,8 @@ webapp.get('/users', async (_req, resp)=>{
  * route implementation GET /user/:id
  */
 webapp.get('/user/:id', async (req, res) => {
-    console.log('READ a user');
     try {
       // get the data from the db
-      console.log('id', req.params.id);
       const result = await users.getUser(req.params.id);
       if (result === undefined) {
         res.status(404).json({ error: 'unknown user' });
@@ -129,9 +126,7 @@ webapp.post('/user', async (req, resp) =>{
 
 webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   const { schedule } = req.body;
-  console.log(schedule)
   const userId = req.userId; // Get the user ID from the request object set by the middleware
-  console.log(userId);
 
   try {
       const result = await users.updateUserSchedule(userId, schedule);
@@ -144,10 +139,8 @@ webapp.post('/user/schedule', authenticateToken, async (req, res) => {
 
 webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   const userId = req.userId;
-  console.log('GET /user/schedule userId:', userId);
   try {
       const schedule = await users.getUserSchedule(userId);
-      console.log('User schedule:', schedule);
       res.status(200).json({ data: schedule || [] });
   } catch (error) {
       console.error('Failed to retrieve schedule:', error);
@@ -158,7 +151,6 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
 // GET endpoint to retrieve user's friends
 webapp.get('/friends', authenticateToken, async (req, res) => {
   const userId = req.userId;
-  console.log('GET /friends userId:', userId);
 
   if (!userId) {
     console.error('User ID not provided');
@@ -167,7 +159,6 @@ webapp.get('/friends', authenticateToken, async (req, res) => {
 
   try {
     const friends = await users.getUserFriends(userId);
-    console.log('User friends:', friends);
     res.status(200).json({ friends });
   } catch (error) {
     console.error('Failed to retrieve friends list:', error);

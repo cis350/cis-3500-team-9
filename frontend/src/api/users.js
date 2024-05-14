@@ -14,7 +14,6 @@ export const getAllUsers = async () =>{
     // always use try/catch in an async function
     try{
         const response = await axios.get(`${rootURL}/users`);
-        console.log("all students", response.data);
         return response.data.data;
 
     } catch (err){
@@ -29,7 +28,6 @@ export const getUserById = async (id) =>{
     // always use try/catch in an async function
     try{
         const response = await axios.get(`${rootURL}/user/${id}`);
-        console.log("A user", response.data);
         return response.data.data;
 
     } catch (err){
@@ -53,7 +51,6 @@ export const createNewUser = async (userObject) => {
         };
 
         const response = await axios.post(`${rootURL}/user`, payload);
-        console.log("A response", response.data);
         return response.data.data;
 
     } catch (err) {
@@ -75,7 +72,6 @@ export const createNewUser = async (userObject) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log("Schedule update response:", response.data);
         return response.data;
     } catch (error) {
         console.error('Error updating schedule:', error.response ? error.response.data : error.message);
@@ -89,10 +85,8 @@ export const createNewUser = async (userObject) => {
         const response = await axios.get(`${rootURL}/user/schedule`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        console.log("Schedule fetched successfully:", response.data);
         return response.data.data || [];  // Ensure you always return an array
     } catch (error) {
-        console.error('Error fetching schedule:', error.response ? error.response.data : error.message);
         return [];  // Return an empty array on error to maintain consistency in your component state
     }
 }
@@ -108,10 +102,8 @@ export const fetchFriends = async () => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        console.log("Friends list fetched successfully:", response.data);
         return response.data.friends;  // Assuming the data is structured { data: friendsList }
     } catch (error) {
-        console.error('Error fetching friends list:', error.response ? error.response.data : error.message);
         throw error;
     }
 }

@@ -1,137 +1,69 @@
 const request = require('supertest');
 const webapp = require('../controller/server');
 const { closeMongoDBConnection, connect } = require('../model/dbUtils');
+const { testUser, insertTestDataToDB, deleteTestDataFromDB } = require('./testUtils');
 
-// import test utilities function
-const { testUser } = require('./testUtils');
-
-describe('individual user - uploading schedule tests', () => {
+describe('individual user - uploading plan tests', () => {
   let mongo; // local mongo connection
-  let response; // the response from our express server
-  /**
-       * We need to make the request to the endpoint
-       * before running any test.
-       * We need to connecto the DB for all the DB checks
-       * If beforeAll is undefined
-       * inside .eslintrc.js, add 'jest' to the 'env' key
-       */
+  let db; // database instance
+  let testUserId; // ID of the test user
+  let token; // authentication token
+
   beforeAll(async () => {
     // connect to the db
     mongo = await connect();
+    db = mongo.db();
 
-    // log the user in
-    await request(webapp).post('/login').send(`username=${testUser.username}&password=${testUser.password}`);
-    //console.log('response', response.text);
+    // insert test user into the database
+    testUserId = await insertTestDataToDB(db, testUser);
+
+    // log the user in and get the token
+    const response = await request(webapp).post('/login').send(`username=${testUser.username}&password=${testUser.password}`);
+    token = response.body.apptoken; // assuming the token is returned in the body as apptoken
   });
 
-  /**
-   * After running the tests, we need to remove any test data from the DB
-   * We need to close the mongodb connection
-   */
   afterAll(async () => {
-    // we need to clear the DB
-    try {
-      // await deleteTestDataFromDB(db, 'testuser');
-      await mongo.close(); // the db connection in beforeAll
-      await closeMongoDBConnection(); // the db connection in missing uname
-      await closeMongoDBConnection(); // the db connection in missing password
-    } catch (err) {
-      return err;
-    }
+    // clean up the test user from the database
+    await deleteTestDataFromDB(db, testUser.username);
+    
+    // close database connections
+    await mongo.close(); // the db connection in beforeAll
+    await closeMongoDBConnection(); // the db connection in missing uname
+    await closeMongoDBConnection(); // the db connection in missing password
   });
 
-  /**
-   * Status code and response type
-   */
+  const newPlan = {
+    name: 'Test Plan',
+    friends: ['friend1', 'friend2'],
+    time: '2024-05-01T00:00:00.000Z',
+  };
 
-  // Tests for the /schedule endpoint
-//   test('missing a field (password) 401', async () => {
-//     const res = await request(webapp).post('/login/')
-//       .send('usernamename=testuser');
-//     expect(res.status).toEqual(401);
-//   });
-
-//   test('missing a field (username) 401', async () => {
-//     const res = await request(webapp).post('/login/')
-//       .send('password=testuser');
-//     expect(res.status).toEqual(401);
-//   });
-
-//   test('missing a field (password) 401', async () => {
-//     const res = await request(webapp).post('/login/').send('username=testuser');
-//     expect(res.status).toEqual(401);
-//   });
-
-const oneSched = ["2024-04-29T13:00:00.000Z"];
-
-const blockSched = [
-  "2024-04-30T12:00:00.000Z",
-  "2024-04-30T13:00:00.000Z",
-  "2024-04-30T14:00:00.000Z",
-  "2024-04-30T15:00:00.000Z",
-  "2024-04-30T16:00:00.000Z",
-  "2024-04-30T17:00:00.000Z",
-  "2024-04-30T18:00:00.000Z",
-  "2024-04-30T19:00:00.000Z",
-  "2024-04-30T21:00:00.000Z",
-  "2024-04-30T22:00:00.000Z",
-  "2024-04-30T23:00:00.000Z",
-  "2024-05-01T00:00:00.000Z"
-];
-
-  // Test for the /plan endpoint
-  test('POST /plan endpoint success case - enters one available timeslot', async () => {
-    // TODO
-    const res = await request(webapp).post('/user/schedule').send({ schedule: oneSched });
-    expect(res.status).toBe(201);
+  test('POST /addPlan endpoint success case - creates a new plan', async () => {
+    const res = await request(webapp).post('/addPlan')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newPlan);
+    expect(res.status).toBe(401);
     expect(res.type).toBe('application/json');
+    expect(res.body.plan).toHaveProperty('name', newPlan.name);
   });
 
-  test('POST /schedule endpoint success case - enters more than one available timeslot', async () => {
-    const res = await request(webapp).post('/user/schedule').send({ schedule: blockSched });
-    expect(res.status).toBe(201);
+  test('GET /plan/:name endpoint success case - retrieves a plan by name', async () => {
+    await request(webapp).post('/addPlan')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newPlan); // Ensure the plan exists
+
+    const res = await request(webapp).get(`/plan/${newPlan.name}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
     expect(res.type).toBe('application/json');
+    expect(res.body.data).toHaveProperty('name', newPlan.name);
   });
 
-  test('POST /schedule endpoint success case - submits no available timeslots', async () => {
-    const res = await request(webapp).post('/user/schedule').send([]);
-    expect(res.status).toBe(201);
-    expect(res.type).toBe('application/json');
+  test('GET /plan/:name endpoint failure case - plan not found', async () => {
+    const res = await request(webapp).get('/plan/NonExistentPlan')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
+    expect(res.type).toBe('text/html');
+    expect(res.body.error).toBe('Plan not found');
   });
-
-  // test('GET /schedule endpoint - schedule contains one available timeslot', async () => {
-  //   // submit schedule first
-  //   console.log('Send schedule:', oneSched);
-  //   request(webapp).post('/user/schedule').send({ schedule: oneSched })
-  //     .set('Content-Type', 'application/json')
-  //     .set('Accept', 'application/json');
-
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(oneSched));
-  // });
-
-  // test('GET /schedule endpoint - schedule contains more than one available timeslot', async () => {
-  //   // submit schedule first
-  //   request(webapp).post('/user/schedule').send({ schedule: blockSched });
-
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(blockSched));
-  // });
-
-  // test('GET /schedule endpoint - no available timeslots submitted', async () => {
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(201);
-  //   expect(res.type).toBe('application/json');
-
-  //   const resArray = JSON.parse(res.text).data;
-  //   expect(resArray).toEqual(expect.arrayContaining([]));
-  // });
 });
