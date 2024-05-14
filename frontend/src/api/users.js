@@ -69,7 +69,7 @@ export const createNewUser = async (userObject) => {
     setHeaders();
     const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
     try {
-        const response = await axios.post(`${rootURL}/user/schedule`, { schedule }, {
+        const response = await axios.post(`${rootURL}/addSchedule`, { schedule }, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export const createNewUser = async (userObject) => {
  export const fetchSchedule = async () => {
     const token = localStorage.getItem('app-token');
     try {
-        const response = await axios.get(`${rootURL}/user/schedule`, {
+        const response = await axios.get(`${rootURL}/schedule`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         console.log("Schedule fetched successfully:", response.data);
@@ -104,9 +104,7 @@ export const fetchFriends = async () => {
     const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
     try {
         const response = await axios.get(`${rootURL}/friends`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         console.log("Friends list fetched successfully:", response.data);
         return response.data.friends;  // Assuming the data is structured { data: friendsList }

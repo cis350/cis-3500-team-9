@@ -127,7 +127,7 @@ webapp.post('/user', async (req, resp) =>{
     }
 });
 
-webapp.post('/user/schedule', authenticateToken, async (req, res) => {
+webapp.post('/addSchedule', authenticateToken, async (req, res) => {
   const { schedule } = req.body;
   console.log(schedule)
   const userId = req.userId; // Get the user ID from the request object set by the middleware
@@ -142,9 +142,10 @@ webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
-webapp.get('/user/schedule', authenticateToken, async (req, res) => {
+webapp.get('/schedule', authenticateToken, async (req, res) => {
   const userId = req.userId;
-  console.log('GET /user/schedule userId:', userId);
+  console.log('GET /schedule userId:', userId);
+
   try {
       const schedule = await users.getUserSchedule(userId);
       console.log('User schedule:', schedule);

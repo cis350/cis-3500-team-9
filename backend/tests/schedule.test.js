@@ -82,56 +82,20 @@ const blockSched = [
   // Test for the /schedule endpoint
   test('POST /schedule endpoint success case - enters one available timeslot', async () => {
     // TODO
-    const res = await request(webapp).post('/user/schedule').send({ schedule: oneSched });
+    const res = await request(webapp).post('/addSchedule').send({ schedule: oneSched });
     expect(res.status).toBe(201);
     expect(res.type).toBe('application/json');
   });
 
   test('POST /schedule endpoint success case - enters more than one available timeslot', async () => {
-    const res = await request(webapp).post('/user/schedule').send({ schedule: blockSched });
+    const res = await request(webapp).post('/addSchedule').send({ schedule: blockSched });
     expect(res.status).toBe(201);
     expect(res.type).toBe('application/json');
   });
 
   test('POST /schedule endpoint success case - submits no available timeslots', async () => {
-    const res = await request(webapp).post('/user/schedule').send([]);
+    const res = await request(webapp).post('/addSchedule').send([]);
     expect(res.status).toBe(201);
     expect(res.type).toBe('application/json');
   });
-
-  // test('GET /schedule endpoint - schedule contains one available timeslot', async () => {
-  //   // submit schedule first
-  //   console.log('Send schedule:', oneSched);
-  //   request(webapp).post('/user/schedule').send({ schedule: oneSched })
-  //     .set('Content-Type', 'application/json')
-  //     .set('Accept', 'application/json');
-
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(oneSched));
-  // });
-
-  // test('GET /schedule endpoint - schedule contains more than one available timeslot', async () => {
-  //   // submit schedule first
-  //   request(webapp).post('/user/schedule').send({ schedule: blockSched });
-
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(200);
-  //   expect(res.type).toBe('application/json');
-  //   const resArray = JSON.parse(res.text).data;
-  //   //TODO
-  //   expect(resArray).toEqual(expect.arrayContaining(blockSched));
-  // });
-
-  // test('GET /schedule endpoint - no available timeslots submitted', async () => {
-  //   const res = await request(webapp).get('/user/schedule');
-  //   expect(res.status).toBe(201);
-  //   expect(res.type).toBe('application/json');
-
-  //   const resArray = JSON.parse(res.text).data;
-  //   expect(resArray).toEqual(expect.arrayContaining([]));
-  // });
 });
