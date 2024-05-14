@@ -1,6 +1,12 @@
 const request = require('supertest');
 const webapp = require('../controller/server');
 const { closeMongoDBConnection, connect } = require('../model/dbUtils');
+const { MongoClient, ObjectId } = require('mongodb');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const { getUserFriends, updateUserFriends } = require('../model/users');
+
+let mongoServer;
+let db;
 
 // import test utilities function
 const { testUser } = require('./testUtils');
@@ -113,5 +119,44 @@ const friendUsername2 = "chencaro";
     });
     expect(res.status).toBe(401);
     expect(res.type).toBe('text/html');
+  });
+});
+
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  const client = new MongoClient(uri);
+  await client.connect();
+  db = client.db('testDB');
+});
+
+afterAll(async () => {
+  await mongoServer.stop();
+});
+
+describe('getUserFriends', () => {
+  let userID;
+
+  beforeEach(async () => {
+    // Seed the database with a user
+    const userData = { name: 'Test User', friends: ['John', 'Doe'] }; // Ensure field names match the schema expected by your functions
+    const result = await db.collection('users').insertOne(userData);
+    userID = result.insertedId.toString(); // Convert ObjectId to string for test
+    console.log("Seeded User ID:", userID); // Debug to confirm ID is generated
+});
+
+  afterEach(async () => {
+    // Clean up the database
+    await db.collection('users').deleteMany({});
+  });
+
+  test('successfully retrieves user friends', async () => {
+    const friends = await getUserFriends(userID);
+    expect(friends).toEqual(['John', 'Doe']);
+  });
+
+  test('returns empty array when user does not exist', async () => {
+    const result = await getUserFriends(new ObjectId().toString()); // Passing a non-existent user ID
+    expect(result).toEqual([]);
   });
 });

@@ -180,23 +180,7 @@ const updateUserFriends = async (userID, friend) => {
   }
 };
 
-const createPlan = async (newPlan) => {
-  try {
-    const db = await getDB();
-    const result = await db.collection('plans').insertOne(newPlan);
-    console.log(`New plan created with id: ${result.insertedId}`);
-    return result;
-  } catch (err) {
-    console.error(`Error creating a plan: ${err.message}`);
-    throw err;
-  }
-};
 
-async function main() {
-  
-}
-
-main();
 // export the functions
 module.exports = {
   addUser,
@@ -209,6 +193,5 @@ module.exports = {
   updateUserSchedule,
   getUserIDByUName,
   updateUserFriends,
-  createPlan,
   getUserFriends
 };
