@@ -71,21 +71,6 @@ const Scheduler = () => {
             </nav>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
-                <div style={{ marginLeft: '20px' }}>
-                    {friends.length > 0 ? friends.map(friend => (
-                        <div key={friend.id}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedFriends.includes(friend.id)}
-                                    onChange={() => handleFriendSelection(friend.id)}
-                                />
-                                {friend.name}
-                            </label>
-                        </div>
-                    )) : <p>No friends to display.</p>}
-                </div>
-
                 <div>
                     <ScheduleSelector
                         selection={schedule}
