@@ -6,7 +6,7 @@ import { createSchedule, fetchFriends, fetchFriendSchedule, fetchSchedule } from
 
 const Scheduler = () => {
     const [schedule, setSchedule] = useState([]);
-    const [friendsList, setFriendsList] = useState([]);
+    const [friends, setFriends] = useState([]);
     const [selectedFriends, setSelectedFriends] = useState([]);
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const Scheduler = () => {
                 ]);
                 console.log("Fetched Friends:", friends);
                 console.log("Fetched Schedule:", currentSchedule);
-                setFriendsList(friends || []);
+                setFriends(friends || []);
                 setSchedule(currentSchedule || []);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -72,7 +72,7 @@ const Scheduler = () => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}> 
                 <div style={{ marginLeft: '20px' }}>
-                    {friendsList.length > 0 ? friendsList.map(friend => (
+                    {friends.length > 0 ? friends.map(friend => (
                         <div key={friend.id}>
                             <label>
                                 <input
