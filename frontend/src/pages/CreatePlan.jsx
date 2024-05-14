@@ -6,7 +6,7 @@ import {fetchFriends} from '../api/users';
 const CreatePlan = () => {
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
-    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: ['vivyxiao','chencaro'] });
+    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: [] });
 
     const rootURL = 'http://localhost:3010'; // Define the root URL of your API
 
