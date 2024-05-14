@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import '../components/css/App.css';
 import ScheduleSelector from 'react-schedule-selector';
-import { createSchedule, fetchFriends, fetchFriendSchedule, fetchSchedule } from '../api/users';
+import { createSchedule, fetchSchedule } from '../api/users';
 
 const Scheduler = () => {
     const [schedule, setSchedule] = useState([]);
-    const [friends, setFriends] = useState([]);
-    const [selectedFriends, setSelectedFriends] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [friends, currentSchedule] = await Promise.all([
-                    fetchFriends(),
+                const [currentSchedule] = await Promise.all([
                     fetchSchedule() // Fetch the current schedule
                 ]);
-                console.log("Fetched Friends:", friends);
                 console.log("Fetched Schedule:", currentSchedule);
-                setFriends(friends || []);
                 setSchedule(currentSchedule || []);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -27,26 +21,6 @@ const Scheduler = () => {
         };
         loadData();
     }, []);
-
-    const handleFriendSelection = (friendId) => {
-        const newSelectedFriends = selectedFriends.includes(friendId)
-            ? selectedFriends.filter(id => id !== friendId)
-            : [...selectedFriends, friendId];
-        setSelectedFriends(newSelectedFriends);
-        updateScheduleWithFriends(newSelectedFriends);
-    };
-
-    const updateScheduleWithFriends = async (friendIds) => {
-        if (friendIds.length > 0) {
-            const friendsSchedules = await Promise.all(
-                friendIds.map(id => fetchFriendSchedule(id))
-            );
-            const combinedSchedules = [].concat.apply([], friendsSchedules);
-            setSchedule([...new Set([...schedule, ...combinedSchedules])]);
-        } else {
-            setSchedule([]);
-        }
-    }
 
     const handleChange = (newSchedule) => {
         setSchedule(newSchedule || []);
@@ -56,7 +30,6 @@ const Scheduler = () => {
         try {
             await createSchedule(schedule);
             alert('Schedule submitted successfully!');
-            navigate('/friends'); // Redirect after submission, adjust as needed
         } catch (error) {
             alert('Failed to submit schedule: ' + error.message);
         }

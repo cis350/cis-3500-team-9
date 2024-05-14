@@ -115,27 +115,3 @@ export const fetchFriends = async () => {
         throw error;
     }
 }
-
-/**
- * Fetch the schedules of a user's friends
- * @param {Array} friendIds - array of friend IDs
- */
-export const fetchFriendSchedule = async (friendIds) => {
-    const token = localStorage.getItem('app-token'); // Retrieve the token from localStorage
-    try {
-        const requests = friendIds.map(id =>
-            axios.get(`${rootURL}/user/${id}/schedule`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-        );
-        const responses = await Promise.all(requests);
-        const schedules = responses.map(response => response.data.data); // Assuming each response is structured correctly
-        console.log("Schedules fetched successfully:", schedules);
-        return schedules; // Returns an array of schedule arrays
-    } catch (error) {
-        console.error('Error fetching schedules:', error.response ? error.response.data : error.message);
-        throw error;
-    }
-}

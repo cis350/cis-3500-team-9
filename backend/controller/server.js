@@ -125,45 +125,7 @@ webapp.post('/user', async (req, resp) =>{
     else{
       resp.status(401).json({message: 'Failed Authentication'});
     }
-    
-
 });
-
-/**
- * route implementation DELETE /user/:id
- */
-webapp.delete('/user/:id', async (req, res) => {
-    try {
-      const result = await users.deleteUser(req.params.id);
-      if (result.deletedCount === 0) {
-        res.status(404).json({ error: 'user not in the system' });
-        return;
-      }
-      // send the response with the appropriate status code
-      res.status(200).json({ message: result });
-    } catch (err) {
-      res.status(400).json({ message: 'there was error' });
-    }
-  });
-  
-  /**
- * route implementation PUT /user/:id
- */
-  webapp.put('/user/:id', async (req, res) => {
-    console.log('UPDATE a user');
-    // parse the body of the request
-    if (!req.body.password) {
-      res.status(400).json({ message: 'missing password' });
-      return;
-    }
-    try {
-      const result = await users.updateUser(req.params.id, req.body.password);
-      // send the response with the appropriate status code
-      res.status(200).json({ message: result });
-    } catch (err) {
-      res.status(404).json({ message: 'there was error' });
-    }
-  });
 
 webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   const { schedule } = req.body;
@@ -239,21 +201,6 @@ webapp.post('/addFriend', authenticateToken, async (req, res) => {
       res.status(200).json({ message: 'Friend added successfully', friends: updatedUser.friends });
   } catch (error) {
       console.error('Failed to add friend:', error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-webapp.get('/plan/:name', authenticateToken, async (req, res) => {
-  //const userId = req.userId;
-  //console.log('GET /user/schedule userId:', userId);
-  const planName = req.params.name;
-  console.log('GET planName', planName);
-  try {
-      const plan = await plans.getPlanByName(userId);
-      console.log('plan:', plan);
-      res.status(200).json({ data: plan || [] });
-  } catch (error) {
-      console.error('Failed to retrieve plan:', error);
       res.status(500).json({ error: 'Internal server error' });
   }
 });
