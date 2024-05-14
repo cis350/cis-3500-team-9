@@ -1,33 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {fetchFriends} from '../api/users';
 import '../components/css/App.css';
 
 const CreatePlan = () => {
     const [username, setUsername] = useState('');
-    const [friends, setFriends] = useState(['a', 'b', 'c']);
-    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: fetchFriends()});
+    const [friends, setFriends] = useState([]);
+    const [plan, setPlan] = useState({ planName: '', planTime: '', planFriends: ['vivyxiao','chencaro'] });
 
     const rootURL = 'http://localhost:3010'; // Define the root URL of your API
+
+    useEffect(() => {
+        const fetchFriends = async () => {
+            try {
+                const token = localStorage.getItem('app-token');
+                if (!token) {
+                    alert('No token found. Please log in.');
+                    return;
+                }
+                console.log("here1");
+                const response = await axios.get(`${rootURL}/user/friends`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.data.friends) {
+                    console.log("here");
+                    setFriends(response.data);
+                } else {
+                    alert('Unexpected response from the server, please try again.');
+                }
+            } catch (error) {
+                console.error('Error fetching friends:', error);
+                alert('Failed to fetch friends.');
+            }
+        };
+
+        fetchFriends();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-          console.log('submitted');
-          //handle POST here
+            const token = localStorage.getItem('app-token');
+            const response = await axios.post(`${rootURL}/addPlan`, {
+                name: plan.planName,
+                time: plan.planTime,
+                friendUsernames: plan.planFriends
+            }, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.data.plan) {
+                alert('Plan created successfully!');
+            } else {
+                alert('Unexpected response from the server, please try again.');
+            }
         } catch (error) {
-          console.error('Login failed:', error.response.data.error);
-          alert('Login failed: ' + error.response.data.error);
+            console.error('Failed to create plan:', error);
+            alert('Failed to create plan.');
         }
-    }; 
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPlan((prevPlan) => ({
-          ...prevPlan,
-          [name]: value,
+            ...prevPlan,
+            [name]: value,
         }));
         console.log(plan);
+    };
+
+    const handleCheckboxChange = (e) => {
+        const { value, checked } = e.target;
+        setPlan((prevPlan) => {
+            const newPlanFriends = checked
+                ? [...prevPlan.planFriends, value]
+                : prevPlan.planFriends.filter((friend) => friend !== value);
+            return { ...prevPlan, planFriends: newPlanFriends };
+        });
     };
 
     return (
@@ -35,7 +84,7 @@ const CreatePlan = () => {
             <h2>Create a plan</h2>
             <div>
                 <form onSubmit={handleSubmit}>
-                    <div class='planForm'>
+                    <div className="planForm">
                         <input
                             type="text"
                             name="planName"
@@ -52,17 +101,19 @@ const CreatePlan = () => {
                             onChange={handleChange}
                             required
                         />
-                         <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <h3>Your Friends:</h3>
                             {friends.length > 0 ? (
-                                friends.map((x) => {
-                                    return <div><input 
-                                        type="checkbox" 
-                                        name="planFriends"
-                                        value={plan.planFriends}
-                                        onChange={handleChange}
-                                    /> {x}</div>
-                                }) 
+                                friends.map((friend) => (
+                                    <div key={friend}>
+                                        <input
+                                            type="checkbox"
+                                            name="planFriends"
+                                            value={friend}
+                                            onChange={handleCheckboxChange}
+                                        /> {friend}
+                                    </div>
+                                ))
                             ) : (
                                 <p>No friends available. <a href='/friends'>Try adding friends!</a></p>
                             )}
@@ -71,8 +122,6 @@ const CreatePlan = () => {
                     </div>
                 </form>
             </div>
-           
-            
         </div>
     );
 };

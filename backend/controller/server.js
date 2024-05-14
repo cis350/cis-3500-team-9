@@ -22,6 +22,7 @@ webapp.use(express.json()); // This line is necessary to parse JSON bodies
 
 // import the db function
 const users = require('../model/users');
+const plans = require('../model/plans');
 
 // root endpoint route
 webapp.get('/', (_req, resp) =>{
@@ -178,23 +179,6 @@ webapp.post('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
-// webapp.get('/user/schedule', authenticateToken, async (req, res) => {
-//   const userId = req.userId; // Get the user ID from the request object
-//   console.log(userId);
-//   try {
-//       const schedule = await users.getUserSchedule(userId);
-//       console.log(schedule);
-//       if (!schedule || schedule.length === 0) {
-//           res.status(200).json({ data: [] }); // Return an empty array if no schedule
-//       } else {
-//           res.status(200).json({ data: schedule });
-//       }
-//   } catch (error) {
-//       console.error('Failed to retrieve schedule:', error);
-//       res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
 webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   const userId = req.userId;
   console.log('GET /user/schedule userId:', userId);
@@ -208,6 +192,25 @@ webapp.get('/user/schedule', authenticateToken, async (req, res) => {
   }
 });
 
+// GET endpoint to retrieve user's friends
+webapp.get('/user/friends', authenticateToken, async (req, res) => {
+  const userId = req.userId;
+  console.log('GET /user/friends userId:', userId);
+
+  if (!userId) {
+    console.error('User ID not provided');
+    return res.status(400).json({ error: 'User ID not provided' });
+  }
+
+  try {
+    const friends = await getUserFriends(userId);
+    console.log('User friends:', friends);
+    res.status(200).json({ friends });
+  } catch (error) {
+    console.error('Failed to retrieve friends list:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 webapp.post('/addFriend', authenticateToken, async (req, res) => {
   const friendUsername = req.body.friendUsername;
@@ -239,7 +242,52 @@ webapp.post('/addFriend', authenticateToken, async (req, res) => {
   }
 });
 
+webapp.get('/plan/:name', authenticateToken, async (req, res) => {
+  //const userId = req.userId;
+  //console.log('GET /user/schedule userId:', userId);
+  const planName = req.params.name;
+  console.log('GET planName', planName);
+  try {
+      const plan = await plans.getPlanByName(userId);
+      console.log('plan:', plan);
+      res.status(200).json({ data: plan || [] });
+  } catch (error) {
+      console.error('Failed to retrieve plan:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
+webapp.post('/addPlan', authenticateToken, async (req, res) => {
+  const friendUsernames = req.body.friendUsernames;
+  const planName = req.body.name;
+  const time = req.body.time;
+
+  try {
+      // Check if the username of each friend exists
+      for (const friendUsername of friendUsernames) {
+        const friend = await users.getUserByUName(friendUsername);
+        if (!friend) {
+            return res.status(404).json({ error: 'Friend username does not exist' });
+        }
+      }
+
+      // Create new plan object
+      const newPlan = {
+        name: planName,
+        friends: friendUsernames,
+        time: time
+      }
+      // Add plan
+      plans.createPlan(newPlan);
+      const plan = plans.getPlanByName(planName);
+      res.status(201).json({ message: 'Plan created successfully', plan: plan });
+
+
+  } catch (error) {
+      console.error('Failed to create plan:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // export the webapp
 module.exports = webapp;
