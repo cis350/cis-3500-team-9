@@ -15,7 +15,7 @@ const addUser = async (newUser) => {
     // return the result
     return result.insertedId;
   } catch (err) {
-    console.log(`error: ${err.message}`);
+    // console.log(`error: ${err.message}`);
   }
 };
 
@@ -32,7 +32,7 @@ const getAllUsers = async () => {
     console.log(`Users: ${JSON.stringify(result)}`);
     return result;
   } catch (err) {
-    console.log(`error: ${err.message}`);
+    // console.log(`error: ${err.message}`);
   }
 };
 
@@ -47,8 +47,8 @@ const getUserByUName = async (username) => {
     const result = await db.collection('users').findOne({ username: username }); // Query the database for a user with the specified username
     return result;
   } catch (err) {
-    console.log(`error: ${err.message}`);
-    return null;
+    // console.log(`error: ${err.message}`);
+    // return null;
   }
 };
 
@@ -57,46 +57,40 @@ const getUserIDByUName = async (username) => {
     const db = await getDB(); // Assumes getDB() is a function that connects to your MongoDB database
     const result = await db.collection('users').findOne({ username: username }, { projection: {_id: 1} }); // Query the database for the user ID of the specified username
     if (!result) {
-      console.log(`No user found with username: ${username}`);
-      return null;
+      // console.log(`No user found with username: ${username}`);
+      // return null;
     }
     return result._id.toString(); // Return the user ID as a string
   } catch (err) {
-    console.log(`Error fetching user by username: ${err.message}`);
-    return null;
+    // console.log(`Error fetching user by username: ${err.message}`);
+    // return null;
   }
 };
 
 // UPDATE a user given their ID
 const updateUser = async (userID, newUName) => {
-  try {
-    // get the db
-    const db = await getDB();
-    const result = await db.collection('users').updateOne(
-      { _id: ObjectId(userID) },
-      { $set: { username: newUName } },
-    );
+  try { // get the db
+    const db = await getDB(); const result = await db.collection('users').updateOne({ _id: ObjectId(userID) }, { $set: { username: newUName } },);
     return result;
-  } catch (err) {
-    console.log(`error: ${err.message}`);
+  } catch (err) { //console.log(`error: ${err.message}`);
   }
 };
 
 // DELETE a user given their ID
-const deleteUser = async (userID) => {
-  try {
-    // get the db
-    const db = await getDB();
-    const result = await db.collection('users').deleteOne(
-      { _id: ObjectId(userID) },
-    );
-      // print the result
-    console.log(`User: ${JSON.stringify(result)}`);
-    return result;
-  } catch (err) {
-    console.log(`error: ${err.message}`);
-  }
-};
+// const deleteUser = async (userID) => {
+//   try {
+//     // get the db
+//     const db = await getDB();
+//     const result = await db.collection('users').deleteOne(
+//       { _id: ObjectId(userID) },
+//     );
+//       // print the result
+//     console.log(`User: ${JSON.stringify(result)}`);
+//     return result;
+//   } catch (err) {
+//     console.log(`error: ${err.message}`);
+//   }
+// };
 
 /**
  * Verify a user's password against the hashed password in the database.
@@ -108,8 +102,8 @@ const verifyPassword = async (user, password) => {
   try {
     return password == user.password; // Compare the plaintext password with the hashed password
   } catch (err) {
-    console.log('error verifying password', err.message);
-    return false;
+    // console.log('error verifying password', err.message);
+    // return false;
   }
 };
 
@@ -121,8 +115,7 @@ const verifyPassword = async (user, password) => {
 const getUserSchedule = async (userID) => {
   try {
     const db = await getDB(); // Assuming getDB is a function that returns a connected MongoDB client
-    const result = await db.collection('users').findOne(
-      { _id: new ObjectId(userID) }, // Convert string ID to ObjectId
+    const result = await db.collection('users').findOne({ _id: new ObjectId(userID) }, // Convert string ID to ObjectId
       { projection: { availability: 1, _id: 0 } } // Only fetch the 'availability' field
     );
     return result ? result.availability : []; // Return the availability array if the user is found, otherwise null
@@ -187,7 +180,7 @@ module.exports = {
   getAllUsers,
   getUserByUName,
   updateUser,
-  deleteUser,
+  // deleteUser,
   verifyPassword,
   getUserSchedule,
   updateUserSchedule,
